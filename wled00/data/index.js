@@ -943,7 +943,7 @@ function populateEffects()
 				}
 			}
 			// Add delete button for dynamically loaded bytecode effects (id >= built-in count)
-			let extra = (typeof deleteFx === 'function' && id >= 218) ? `<button class="btn btn-fx-del" style="float:right;" title="Delete effect" onclick="event.stopPropagation();deleteFx(${id})">&#10005;</button>` : '';
+			let extra = (typeof deleteFx === 'function' && id > 0) ? `<button class="btn btn-fx-del" style="float:right;" title="Delete effect" onclick="event.stopPropagation();deleteFx(${id})">&#10005;</button>` : '';
 			html += generateListItemHtml('fx',id,nm,'setFX',extra,fd);
 		}
 	}
