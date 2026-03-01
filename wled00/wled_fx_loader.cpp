@@ -163,19 +163,24 @@ bool FXLoader::loadEffect(const char* path) {
   strncpy(fx.filename, fname, sizeof(fx.filename) - 1);
   fx.filename[sizeof(fx.filename) - 1] = '\0';
 
-  // Register with WS2812FX — append (id=255 finds empty slot, or appends)
-  uint8_t assignedId = strip.addEffect(255, &FXLoader::vmTrampoline, fx.metadata);
+  // Store in persistent array FIRST so the metadata pointer stays valid
+  // (addEffect stores a raw pointer to the name string)
+  _effects[_numEffects] = fx;
+
+  // Register with WS2812FX using the persistent metadata pointer
+  uint8_t assignedId = strip.addEffect(255, &FXLoader::vmTrampoline, _effects[_numEffects].metadata);
   if (assignedId == 255) {
     DEBUG_PRINTLN(F("FXLoader: addEffect failed (strip full)"));
-    free(fx.bytecode);
+    free(_effects[_numEffects].bytecode);
+    _effects[_numEffects].bytecode = nullptr;
     return false;
   }
 
-  fx.id = assignedId;
-  _effects[_numEffects++] = fx;
+  _effects[_numEffects].id = assignedId;
+  _numEffects++;
 
   DEBUG_PRINTF_P(PSTR("FXLoader: loaded '%s' as mode %d (%d bytes)\n"),
-    fx.metadata, fx.id, fx.bcLen);
+    _effects[_numEffects - 1].metadata, assignedId, fx.bcLen);
 
   return true;
 }
