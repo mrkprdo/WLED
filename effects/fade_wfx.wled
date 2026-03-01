@@ -1,4 +1,4 @@
-effect "Fade" {
+effect "Fade WFX" {
   meta {
     slider speed "Speed"
     palette true

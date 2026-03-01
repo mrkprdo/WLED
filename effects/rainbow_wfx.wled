@@ -1,4 +1,4 @@
-effect "Rainbow" {
+effect "Rainbow WFX" {
   meta {
     slider speed "Speed"
     slider intensity "Width"

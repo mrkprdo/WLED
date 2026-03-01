@@ -1,4 +1,4 @@
-effect "Breathe" {
+effect "Breathe WFX" {
   meta {
     slider speed "Speed"
     palette true

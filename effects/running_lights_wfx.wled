@@ -1,4 +1,4 @@
-effect "Running Lights" {
+effect "Running Lights WFX" {
   meta {
     slider speed "Speed"
     slider intensity "Wave size"

@@ -1,4 +1,4 @@
-effect "Blink" {
+effect "Blink WFX" {
   meta {
     slider speed "Speed"
     slider intensity "Duty cycle"

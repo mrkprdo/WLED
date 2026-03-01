@@ -1,4 +1,4 @@
-effect "Theater Chase" {
+effect "Theater Chase WFX" {
   meta {
     slider speed "Speed"
     slider intensity "Gap size"

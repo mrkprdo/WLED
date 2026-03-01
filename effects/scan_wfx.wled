@@ -1,4 +1,4 @@
-effect "Scan" {
+effect "Scan WFX" {
   meta {
     slider speed "Speed"
     slider intensity "Width"

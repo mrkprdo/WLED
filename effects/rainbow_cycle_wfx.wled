@@ -1,4 +1,4 @@
-effect "Rainbow Cycle" {
+effect "Rainbow Cycle WFX" {
   meta {
     slider speed "Speed"
     slider intensity "Density"

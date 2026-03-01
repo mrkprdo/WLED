@@ -1,4 +1,4 @@
-effect "Gradient" {
+effect "Gradient WFX" {
   meta {
     slider speed "Speed"
     palette true

@@ -1,4 +1,4 @@
-effect "Plasma 2D" {
+effect "Plasma 2D WFX" {
   meta {
     slider speed "Speed"
     slider intensity "Scale"

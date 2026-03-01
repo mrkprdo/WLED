@@ -1,4 +1,4 @@
-effect "Fire 2012" {
+effect "Fire 2012 WFX" {
   meta {
     slider speed "Cooling"
     slider intensity "Sparking"

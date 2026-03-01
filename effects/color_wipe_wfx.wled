@@ -1,4 +1,4 @@
-effect "Color Wipe" {
+effect "Color Wipe WFX" {
   meta {
     slider speed "Speed"
     palette true

@@ -1,4 +1,4 @@
-effect "Chase" {
+effect "Chase WFX" {
   meta {
     slider speed "Speed"
     slider intensity "Width"
