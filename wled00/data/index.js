@@ -942,7 +942,9 @@ function populateEffects()
 					if (m.includes('f')) nm += "&#9835;"; // frequency effects
 				}
 			}
-			html += generateListItemHtml('fx',id,nm,'setFX','',fd);
+			// Add delete button for dynamically loaded bytecode effects (id >= built-in count)
+			let extra = (typeof deleteFx === 'function' && id >= 218) ? `<button class="btn btn-fx-del" style="float:right;" title="Delete effect" onclick="event.stopPropagation();deleteFx(${id})">&#10005;</button>` : '';
+			html += generateListItemHtml('fx',id,nm,'setFX',extra,fd);
 		}
 	}
 
@@ -2378,6 +2380,43 @@ function setFX(ind = null)
 
 	var obj = {"seg": {"fx": parseInt(ind), "fxdef": cfg.comp.fxdef}}; // fxdef sets effect parameters to default values
 	requestJson(obj);
+}
+
+function toggleFxUpload() {
+	var panel = gId('fxUploadPanel');
+	panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+function uploadFx() {
+	var input = gId('fxFileInput');
+	var status = gId('fxUploadStatus');
+	if (!input.files.length) { status.textContent = 'No file selected'; return; }
+	var remaining = input.files.length;
+	status.textContent = 'Uploading...';
+	for (var i = 0; i < input.files.length; i++) {
+		var file = input.files[i];
+		var formData = new FormData();
+		formData.append('file', file, '/fx/' + file.name);
+		fetch(getURL('/upload'), {method: 'POST', body: formData})
+			.then(function(r) {
+				remaining--;
+				if (remaining <= 0) {
+					status.textContent = 'Done! Reboot to activate.';
+					input.value = '';
+				}
+			})
+			.catch(function(e) { status.textContent = 'Error: ' + e; });
+	}
+}
+
+function deleteFx(id) {
+	if (!confirm('Delete this effect?')) return;
+	var formData = new FormData();
+	formData.append('id', id);
+	fetch(getURL('/fx/delete'), {method: 'POST', body: formData})
+		.then(function(r) { return r.text(); })
+		.then(function(t) { showToast(t); loadFX(); })
+		.catch(function(e) { showToast('Error: ' + e); });
 }
 
 function setPalette(paletteId = null)

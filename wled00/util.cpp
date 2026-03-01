@@ -957,6 +957,9 @@ void handleBootLoop() {
 #endif
     case BOOTLOOP_ACTION_DUMP:
       dumpFilesToSerial();
+      // Reset bootloop state so next boot proceeds normally
+      bl_crashcounter = 0;
+      bl_actiontracker = BOOTLOOP_ACTION_RESTORE;
       break;
   }
 

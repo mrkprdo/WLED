@@ -1,4 +1,5 @@
 #include "wled.h"
+#include "wled_fx_loader.h"
 
 #ifndef WLED_DISABLE_OTA
   #include "ota_update.h"  
@@ -218,6 +219,12 @@ static void handleUpload(AsyncWebServerRequest *request, const String& filename,
       request->send(200, FPSTR(CONTENT_TYPE_PLAIN), F("Config restore ok.\nRebooting..."));
     } else {
       if (filename.indexOf(F("palette")) >= 0 && filename.indexOf(F(".json")) >= 0) loadCustomPalettes();
+      // Load bytecode effect if a .wfx file was uploaded to /fx/
+      if (filename.indexOf(F(".wfx")) >= 0) {
+        String fxPath = filename;
+        if (fxPath.charAt(0) != '/') fxPath = '/' + fxPath;
+        FXLoader::loadEffect(fxPath.c_str());
+      }
       request->send(200, FPSTR(CONTENT_TYPE_PLAIN), F("File Uploaded!"));
     }
     cacheInvalidate++;
@@ -488,6 +495,33 @@ void initServer()
         [](AsyncWebServerRequest *request, const String& filename, size_t index, uint8_t *data,
                       size_t len, bool isFinal) {handleUpload(request, filename, index, data, len, isFinal);}
   );
+
+  // Delete a bytecode effect file (POST to prevent CSRF)
+  server.on(F("/fx/delete"), HTTP_POST, [](AsyncWebServerRequest *request) {
+    if (!correctPIN) { request->send(401, FPSTR(CONTENT_TYPE_PLAIN), FPSTR(s_unlock_cfg)); return; }
+    // Support deletion by mode ID or by filename
+    if (request->hasParam(F("id"), true)) {
+      uint8_t id = request->getParam(F("id"), true)->value().toInt();
+      WfxEffect* fx = FXLoader::getEffect(id);
+      if (fx) {
+        String fullPath = String(FX_DIR) + "/" + fx->filename;
+        FXLoader::unloadEffect(id);
+        WLED_FS.remove(fullPath);
+        request->send(200, FPSTR(CONTENT_TYPE_PLAIN), F("Effect removed. Reboot to fully refresh."));
+      } else {
+        request->send(404, FPSTR(CONTENT_TYPE_PLAIN), F("Effect not found"));
+      }
+    } else if (request->hasParam(F("name"), true)) {
+      String name = request->getParam(F("name"), true)->value();
+      if (FXLoader::unloadEffectByName(name.c_str())) {
+        request->send(200, FPSTR(CONTENT_TYPE_PLAIN), F("Effect removed. Reboot to fully refresh."));
+      } else {
+        request->send(404, FPSTR(CONTENT_TYPE_PLAIN), F("Effect not found"));
+      }
+    } else {
+      request->send(400, FPSTR(CONTENT_TYPE_PLAIN), F("Missing id or name"));
+    }
+  });
 
   createEditHandler(); // initialize "/edit" handler, access is protected by "correctPIN"
 
