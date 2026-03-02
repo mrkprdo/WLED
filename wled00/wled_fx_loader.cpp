@@ -104,7 +104,9 @@ bool FXLoader::loadEffect(const char* path) {
     return false;
   }
 
-  if (header.bytecodeLen == 0 || header.bytecodeLen > 0xFFFF) {
+  // Validate bytecode length: must be non-zero and fit within the file
+  size_t maxBcLen = fileSize - sizeof(WfxHeader) - 1; // at least 1 byte for metadata null terminator
+  if (header.bytecodeLen == 0 || header.bytecodeLen > maxBcLen) {
     DEBUG_PRINTLN(F("FXLoader: invalid bytecode length"));
     file.close();
     return false;
@@ -125,6 +127,12 @@ bool FXLoader::loadEffect(const char* path) {
     fx.metadata[metaIdx++] = (char)b;
   }
   fx.metadata[metaIdx] = '\0';
+  // If metadata was truncated, consume remaining bytes until null terminator
+  // to keep file position aligned for bytecode read
+  if (metaIdx == FX_METADATA_MAX - 1) {
+    int b;
+    do { b = file.read(); } while (b > 0);
+  }
 
   if (metaIdx == 0) {
     // No metadata — use filename as effect name
@@ -188,11 +196,16 @@ bool FXLoader::loadEffect(const char* path) {
 bool FXLoader::unloadEffect(uint8_t modeId) {
   for (uint8_t i = 0; i < _numEffects; i++) {
     if (_effects[i].id == modeId) {
-      if (_effects[i].bytecode) free(_effects[i].bytecode);
+      // Null bytecode pointer BEFORE freeing to prevent VM from accessing freed memory
+      uint8_t* bc = _effects[i].bytecode;
+      _effects[i].bytecode = nullptr;
+      if (bc) free(bc);
       // Shift remaining entries down
       for (uint8_t j = i; j + 1 < _numEffects; j++) {
         _effects[j] = _effects[j + 1];
       }
+      // Clear last slot to prevent stale data
+      memset(&_effects[_numEffects - 1], 0, sizeof(WfxEffect));
       _numEffects--;
       return true;
     }
@@ -203,11 +216,16 @@ bool FXLoader::unloadEffect(uint8_t modeId) {
 bool FXLoader::unloadEffectByName(const char* filename) {
   for (uint8_t i = 0; i < _numEffects; i++) {
     if (strcmp(_effects[i].filename, filename) == 0) {
-      if (_effects[i].bytecode) free(_effects[i].bytecode);
+      // Null bytecode pointer BEFORE freeing to prevent VM from accessing freed memory
+      uint8_t* bc = _effects[i].bytecode;
+      _effects[i].bytecode = nullptr;
+      if (bc) free(bc);
       // Shift remaining entries down
       for (uint8_t j = i; j + 1 < _numEffects; j++) {
         _effects[j] = _effects[j + 1];
       }
+      // Clear last slot to prevent stale data
+      memset(&_effects[_numEffects - 1], 0, sizeof(WfxEffect));
       _numEffects--;
       // Delete the file from filesystem
       String fullPath = String(FX_DIR) + "/" + filename;

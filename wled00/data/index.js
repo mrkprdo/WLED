@@ -923,7 +923,7 @@ function populateEffects()
 	for (let ef of effects) {
 		// add slider and color control to setFX (used by requestjson)
 		let id = ef.id;
-		let nm = ef.name+" ";
+		let nm = ef.name.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')+" ";
 		let fd = "";
 		if (ef.name.indexOf("RSVD") < 0) {
 			if (Array.isArray(fxdata) && fxdata.length>id) {

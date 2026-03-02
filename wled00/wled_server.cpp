@@ -205,6 +205,13 @@ static void handleUpload(AsyncWebServerRequest *request, const String& filename,
       finalname = '/' + finalname; // prepend slash if missing
     }
 
+    // Enforce /fx/ directory for .wfx uploads: strip path components and force prefix
+    if (finalname.indexOf(F(".wfx")) >= 0) {
+      int lastSlash = finalname.lastIndexOf('/');
+      String basename = finalname.substring(lastSlash + 1);
+      finalname = String(FX_DIR) + "/" + basename;
+    }
+
     request->_tempFile = WLED_FS.open(finalname, "w");
     DEBUG_PRINTF_P(PSTR("Uploading %s\n"), finalname.c_str());
     if (finalname.equals(FPSTR(getPresetsFileName()))) presetsModifiedTime = toki.second();

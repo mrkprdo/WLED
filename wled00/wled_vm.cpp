@@ -50,25 +50,25 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg) {
     // ---- Arithmetic ----
     case OP_ADD: {
       uint8_t d = readU8(bc), a = readU8(bc), b = readU8(bc);
-      setReg(d, getReg(a) + getReg(b));
+      setReg(d, (int32_t)((uint32_t)getReg(a) + (uint32_t)getReg(b)));
     } break;
     case OP_SUB: {
       uint8_t d = readU8(bc), a = readU8(bc), b = readU8(bc);
-      setReg(d, getReg(a) - getReg(b));
+      setReg(d, (int32_t)((uint32_t)getReg(a) - (uint32_t)getReg(b)));
     } break;
     case OP_MUL: {
       uint8_t d = readU8(bc), a = readU8(bc), b = readU8(bc);
-      setReg(d, getReg(a) * getReg(b));
+      setReg(d, (int32_t)((uint32_t)getReg(a) * (uint32_t)getReg(b)));
     } break;
     case OP_DIV: {
       uint8_t d = readU8(bc), a = readU8(bc), b = readU8(bc);
-      int32_t bv = getReg(b);
-      setReg(d, bv != 0 ? getReg(a) / bv : 0);
+      int32_t av = getReg(a), bv = getReg(b);
+      setReg(d, (bv != 0 && !(av == INT32_MIN && bv == -1)) ? av / bv : 0);
     } break;
     case OP_MOD: {
       uint8_t d = readU8(bc), a = readU8(bc), b = readU8(bc);
-      int32_t bv = getReg(b);
-      setReg(d, bv != 0 ? getReg(a) % bv : 0);
+      int32_t av = getReg(a), bv = getReg(b);
+      setReg(d, (bv != 0 && !(av == INT32_MIN && bv == -1)) ? av % bv : 0);
     } break;
     case OP_AND: {
       uint8_t d = readU8(bc), a = readU8(bc), b = readU8(bc);
@@ -84,7 +84,7 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg) {
     } break;
     case OP_SHL: {
       uint8_t d = readU8(bc), a = readU8(bc), b = readU8(bc);
-      setReg(d, getReg(a) << (getReg(b) & 31));
+      setReg(d, (int32_t)((uint32_t)getReg(a) << (getReg(b) & 31)));
     } break;
     case OP_SHR: {
       uint8_t d = readU8(bc), a = readU8(bc), b = readU8(bc);
@@ -397,12 +397,11 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg) {
     } break;
     case OP_CALL: {
       int16_t off = readI16(bc);
-      if (callDepth < VM_CALL_STACK_DEPTH) {
-        callStack[callDepth++] = pc;
-        int32_t target = (int32_t)pc + off;
-        if (target < 0 || target > (int32_t)len) return FRAMETIME;
-        pc = (uint16_t)target;
-      }
+      if (callDepth >= VM_CALL_STACK_DEPTH) return FRAMETIME; // halt on call stack overflow
+      callStack[callDepth++] = pc;
+      int32_t target = (int32_t)pc + off;
+      if (target < 0 || target > (int32_t)len) return FRAMETIME;
+      pc = (uint16_t)target;
     } break;
     #undef VM_JUMP
     case OP_RET: {
@@ -424,7 +423,7 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg) {
       int32_t raw = getReg(a);
       uint16_t size = (uint16_t)(raw > 0 ? min(raw, (int32_t)4096) : 0); // cap at 4KB
       bool ok = seg.allocateData(size);
-      regs[REG_R0] = ok ? 1 : 0;
+      setReg(REG_R0, ok ? 1 : 0);
       if (ok) {
         dataBuf = seg.data;
         dataLen = seg.dataSize();
@@ -450,10 +449,10 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg) {
       seg.move((uint8_t)getReg(d), (uint8_t)getReg(delta), (bool)getReg(wrap));
     } break;
 #else
-    case OP_DLINE: { pc += 5; } break;
-    case OP_DCIRC: { pc += 4; } break;
-    case OP_FCIRC: { pc += 4; } break;
-    case OP_MOVEP: { pc += 3; } break;
+    case OP_DLINE: { readU8(bc); readU8(bc); readU8(bc); readU8(bc); readU8(bc); } break;
+    case OP_DCIRC: { readU8(bc); readU8(bc); readU8(bc); readU8(bc); } break;
+    case OP_FCIRC: { readU8(bc); readU8(bc); readU8(bc); readU8(bc); } break;
+    case OP_MOVEP: { readU8(bc); readU8(bc); readU8(bc); } break;
 #endif
 
     // ---- Float Operations ----
@@ -480,7 +479,9 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg) {
     } break;
     case OP_FTOI: {
       uint8_t d = readU8(bc), a = readU8(bc);
-      setReg(d, (int32_t)getFloat(a));
+      float fv = getFloat(a);
+      if (isnan(fv) || isinf(fv) || fv > (float)INT32_MAX || fv < (float)INT32_MIN) setReg(d, 0);
+      else setReg(d, (int32_t)fv);
     } break;
     case OP_FSIN: {
       uint8_t d = readU8(bc), a = readU8(bc);
