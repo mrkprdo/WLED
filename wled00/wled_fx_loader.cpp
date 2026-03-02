@@ -10,7 +10,7 @@
 
 // Static member initialization
 WfxEffect FXLoader::_effects[FX_MAX_EFFECTS];
-uint8_t FXLoader::_numEffects = 0;
+uint8_t FXLoader::_numSlots = 0;
 
 // Shared VM instance (one per frame, not per effect — effects don't run concurrently)
 static WledVM vmInstance;
@@ -37,10 +37,11 @@ void FXLoader::init() {
   DEBUG_PRINTLN(F("FXLoader: init start"));
 
   // Free any previously loaded bytecode
-  for (uint8_t i = 0; i < _numEffects; i++) {
+  for (uint8_t i = 0; i < _numSlots; i++) {
     if (_effects[i].bytecode) { free(_effects[i].bytecode); _effects[i].bytecode = nullptr; }
   }
-  _numEffects = 0;
+  memset(_effects, 0, sizeof(_effects));
+  _numSlots = 0;
 
   // Create /fx directory if it doesn't exist
   if (!WLED_FS.mkdir(FX_DIR)) {
@@ -66,13 +67,21 @@ void FXLoader::init() {
     file = dir.openNextFile();
   }
 
-  DEBUG_PRINTF_P(PSTR("FXLoader: loaded %d bytecode effects\n"), _numEffects);
+  DEBUG_PRINTF_P(PSTR("FXLoader: loaded %d bytecode effects\n"), count());
 }
 
 bool FXLoader::loadEffect(const char* path) {
-  if (_numEffects >= FX_MAX_EFFECTS) {
-    DEBUG_PRINTLN(F("FXLoader: max effects reached"));
-    return false;
+  // Find a free slot: first check gaps (bytecode==nullptr), then extend
+  int8_t slot = -1;
+  for (uint8_t i = 0; i < _numSlots; i++) {
+    if (!_effects[i].bytecode && !_effects[i].pendingDelete) { slot = i; break; }
+  }
+  if (slot < 0) {
+    if (_numSlots >= FX_MAX_EFFECTS) {
+      DEBUG_PRINTLN(F("FXLoader: max effects reached"));
+      return false;
+    }
+    slot = _numSlots;
   }
 
   File file = WLED_FS.open(path, "r");
@@ -173,29 +182,29 @@ bool FXLoader::loadEffect(const char* path) {
 
   // Store in persistent array FIRST so the metadata pointer stays valid
   // (addEffect stores a raw pointer to the name string)
-  _effects[_numEffects] = fx;
+  _effects[slot] = fx;
 
   // Register with WS2812FX using the persistent metadata pointer
-  uint8_t assignedId = strip.addEffect(255, &FXLoader::vmTrampoline, _effects[_numEffects].metadata);
+  uint8_t assignedId = strip.addEffect(255, &FXLoader::vmTrampoline, _effects[slot].metadata);
   if (assignedId == 255) {
     DEBUG_PRINTLN(F("FXLoader: addEffect failed (strip full)"));
-    free(_effects[_numEffects].bytecode);
-    _effects[_numEffects].bytecode = nullptr;
+    free(_effects[slot].bytecode);
+    memset(&_effects[slot], 0, sizeof(WfxEffect));
     return false;
   }
 
-  _effects[_numEffects].id = assignedId;
-  _numEffects++;
+  _effects[slot].id = assignedId;
+  if (slot >= _numSlots) _numSlots = slot + 1; // extend high-water mark
 
   DEBUG_PRINTF_P(PSTR("FXLoader: loaded '%s' as mode %d (%d bytes)\n"),
-    _effects[_numEffects - 1].metadata, assignedId, fx.bcLen);
+    _effects[slot].metadata, assignedId, fx.bcLen);
 
   return true;
 }
 
 bool FXLoader::unloadEffect(uint8_t modeId) {
-  for (uint8_t i = 0; i < _numEffects; i++) {
-    if (_effects[i].id == modeId) {
+  for (uint8_t i = 0; i < _numSlots; i++) {
+    if (_effects[i].bytecode && _effects[i].id == modeId) {
       // Mark for deferred deletion — actual free happens in servicePendingDeletes()
       // called from main loop, avoiding race with VM execution in the same task.
       _effects[i].pendingDelete = true;
@@ -206,8 +215,8 @@ bool FXLoader::unloadEffect(uint8_t modeId) {
 }
 
 bool FXLoader::unloadEffectByName(const char* filename) {
-  for (uint8_t i = 0; i < _numEffects; i++) {
-    if (strcmp(_effects[i].filename, filename) == 0) {
+  for (uint8_t i = 0; i < _numSlots; i++) {
+    if (_effects[i].bytecode && strcmp(_effects[i].filename, filename) == 0) {
       _effects[i].pendingDelete = true;
       // Delete the file from filesystem
       String fullPath = String(FX_DIR) + "/" + filename;
@@ -218,33 +227,32 @@ bool FXLoader::unloadEffectByName(const char* filename) {
   return false;
 }
 
-// Called from main loop — safe to free bytecode and shift array since
+// Called from main loop — safe to free bytecode and modify strip since
 // VM execution (vmTrampoline) runs in the same task context.
 void FXLoader::servicePendingDeletes() {
-  for (uint8_t i = 0; i < _numEffects; ) {
+  for (uint8_t i = 0; i < _numSlots; i++) {
     if (_effects[i].pendingDelete) {
-      if (_effects[i].bytecode) { free(_effects[i].bytecode); _effects[i].bytecode = nullptr; }
-      // Shift remaining entries down
-      for (uint8_t j = i; j + 1 < _numEffects; j++) {
-        _effects[j] = _effects[j + 1];
-      }
-      // Clear last slot to prevent stale data
-      memset(&_effects[_numEffects - 1], 0, sizeof(WfxEffect));
-      _numEffects--;
-      // don't increment i — re-check this slot (shifted entry)
-    } else {
-      i++;
+      // Remove from strip first (resets segments using this mode to Solid)
+      strip.removeEffect(_effects[i].id);
+      // Free bytecode
+      if (_effects[i].bytecode) { free(_effects[i].bytecode); }
+      // Clear slot — now available for reuse by loadEffect()
+      memset(&_effects[i], 0, sizeof(WfxEffect));
     }
   }
 }
 
 WfxEffect* FXLoader::getEffect(uint8_t modeId) {
-  for (uint8_t i = 0; i < _numEffects; i++) {
-    if (_effects[i].id == modeId) return &_effects[i];
+  for (uint8_t i = 0; i < _numSlots; i++) {
+    if (_effects[i].bytecode && _effects[i].id == modeId) return &_effects[i];
   }
   return nullptr;
 }
 
 uint8_t FXLoader::count() {
-  return _numEffects;
+  uint8_t n = 0;
+  for (uint8_t i = 0; i < _numSlots; i++) {
+    if (_effects[i].bytecode && !_effects[i].pendingDelete) n++;
+  }
+  return n;
 }

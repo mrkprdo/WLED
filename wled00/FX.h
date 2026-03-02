@@ -941,6 +941,7 @@ class WS2812FX {
     uint8_t getLastActiveSegmentId() const;
     uint8_t getActiveSegsLightCapabilities(bool selectedOnly = false) const;
     uint8_t addEffect(uint8_t id, mode_ptr mode_fn, const char *mode_name);         // add effect to the list; defined in FX.cpp;
+    bool    removeEffect(uint8_t id);                                               // reset effect slot to RSVD; defined in FX.cpp;
 
     inline uint8_t getBrightness() const    { return _brightness; }       // returns current strip brightness
     inline static constexpr unsigned getMaxSegments() { return MAX_NUM_SEGMENTS; }  // returns maximum number of supported segments (fixed value)

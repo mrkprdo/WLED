@@ -54,6 +54,19 @@ uint8_t WS2812FX::addEffect(uint8_t id, mode_ptr mode_fn, const char *mode_name)
   }
 }
 
+// Reset an effect slot back to Reserved. Segments using this mode switch to Solid.
+bool WS2812FX::removeEffect(uint8_t id) {
+  if (id == 0 || id >= _mode.size()) return false;           // can't remove Solid or out-of-range
+  if (_modeData[id] == _data_RESERVED) return false;         // already reserved
+  _mode[id]     = &mode_static;                              // safe fallback function
+  _modeData[id] = _data_RESERVED;
+  // Reset any segment using this mode to Solid
+  for (size_t i = 0; i < _segments.size(); i++) {
+    if (_segments[i].mode == id) _segments[i].mode = DEFAULT_MODE;
+  }
+  return true;
+}
+
 void WS2812FX::setupEffectData() {
   // Solid must be first! (assuming vector is empty upon call to setup)
   _mode.push_back(&mode_static);
