@@ -851,15 +851,27 @@ input[type=range]::-moz-range-thumb {
 	border-radius: 20px;
 	text-overflow: ellipsis;
 }
-.btn-fx-del {
-	width: 24px !important;
-	height: 24px !important;
-	padding: 0 !important;
-	margin: 2px;
-	font-size: 12px;
-	line-height: 24px;
-	text-align: center;
-	border-radius: 12px;
+/* kebab context menu for bytecode effects */
+#fxctx {
+	position: fixed;
+	background: var(--c-3);
+	border: 1px solid var(--c-6);
+	border-radius: 8px;
+	padding: 2px 0;
+	z-index: 100;
+	box-shadow: 0 2px 8px rgba(0,0,0,.4);
+}
+#fxctx span {
+	display: block;
+	padding: 8px 16px;
+	cursor: pointer;
+	color: var(--c-f);
+	font-size: 13px;
+	white-space: nowrap;
+}
+#fxctx span:hover {
+	background: var(--c-5);
+	border-radius: 8px;
 }
 #info .btn-xs {
 	border: 1px solid var(--c-4);

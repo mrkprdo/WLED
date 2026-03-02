@@ -942,8 +942,8 @@ function populateEffects()
 					if (m.includes('f')) nm += "&#9835;"; // frequency effects
 				}
 			}
-			// Add delete button for dynamically loaded bytecode effects (id >= built-in count)
-			let extra = (typeof deleteFx === 'function' && id > 0) ? `<button class="btn btn-fx-del" style="float:right;" title="Delete effect" onclick="event.stopPropagation();deleteFx(${id})">&#10005;</button>` : '';
+			// Add file menu for dynamically loaded bytecode effects
+			let extra = (typeof deleteFx === 'function' && id > 0) ? `<span class="e-icon flr" title="Options" style="cursor:pointer;font-size:14px;padding:10px;" onclick="event.stopPropagation();tglFxMenu(event,${id})">&#128196;</span>` : '';
 			html += generateListItemHtml('fx',id,nm,'setFX',extra,fd);
 		}
 	}
@@ -2409,11 +2409,28 @@ function uploadFx() {
 	}
 }
 
+function tglFxMenu(e, id) {
+	var m = gId('fxctx');
+	if (m) { var prev = m.dataset.id; m.remove(); if (prev == id) return; }
+	m = d.createElement('div');
+	m.id = 'fxctx';
+	m.dataset.id = id;
+	m.innerHTML = '<span onclick="deleteFx(' + id + ')">Delete</span>';
+	var r = e.target.getBoundingClientRect();
+	m.style.top = (r.bottom + 2) + 'px';
+	m.style.right = (window.innerWidth - r.right) + 'px';
+	d.body.appendChild(m);
+	setTimeout(function(){ d.addEventListener('click', function rm(){ var x=gId('fxctx'); if(x) x.remove(); d.removeEventListener('click',rm); }); }, 0);
+}
+
 function deleteFx(id) {
+	var m = gId('fxctx'); if (m) m.remove();
 	if (!confirm('Delete this effect?')) return;
-	var formData = new FormData();
-	formData.append('id', id);
-	fetch(getURL('/fx/delete'), {method: 'POST', body: formData})
+	fetch(getURL('/fx/delete'), {
+		method: 'POST',
+		headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+		body: 'id=' + id
+	})
 		.then(function(r) { return r.text(); })
 		.then(function(t) { showToast(t); loadFX(); })
 		.catch(function(e) { showToast('Error: ' + e); });

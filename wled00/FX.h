@@ -379,7 +379,7 @@ extern byte realtimeMode;           // used in getMappedPixelIndex()
 #define FX_MODE_PS1DSONICBOOM          215
 #define FX_MODE_PS1DSPRINGY            216
 #define FX_MODE_PARTICLEGALAXY         217
-#define MODE_COUNT                     1   // only Solid built-in; bytecode effects added dynamically by FXLoader
+#define MODE_COUNT                     2   // Solid + reserve; must be >1 so constructor capacity check passes and setupEffectData() runs
 
 
 #define BLEND_STYLE_FADE            0x00  // universal
