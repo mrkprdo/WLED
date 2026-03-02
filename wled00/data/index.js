@@ -2401,8 +2401,9 @@ function uploadFx() {
 			.then(function(r) {
 				remaining--;
 				if (remaining <= 0) {
-					status.textContent = 'Done! Reboot to activate.';
+					status.textContent = 'Done!';
 					input.value = '';
+					loadFX().then(function() { return loadFXData(); }).then(function() { populateEffects(); });
 				}
 			})
 			.catch(function(e) { status.textContent = 'Error: ' + e; });
