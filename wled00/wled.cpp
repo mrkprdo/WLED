@@ -130,6 +130,7 @@ void WLED::loop()
 
     if (!offMode || strip.isOffRefreshRequired() || strip.needsUpdate())
       strip.service();
+    FXLoader::servicePendingDeletes(); // process deferred effect deletions (safe: same task as VM)
     #ifdef ESP8266
     else if (!noWifiSleep)
       delay(1); //required to make sure ESP enters modem sleep (see #1184)

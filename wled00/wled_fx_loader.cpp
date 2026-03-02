@@ -19,7 +19,7 @@ static WledVM vmInstance;
 void FXLoader::vmTrampoline() {
   uint8_t modeId = SEGMENT.mode;
   WfxEffect* fx = getEffect(modeId);
-  if (!fx || !fx->bytecode) return;
+  if (!fx || !fx->bytecode || fx->pendingDelete) return;
 
   // Allocate data buffer if the effect needs one
   if (fx->dataSize > 0) {
@@ -196,17 +196,9 @@ bool FXLoader::loadEffect(const char* path) {
 bool FXLoader::unloadEffect(uint8_t modeId) {
   for (uint8_t i = 0; i < _numEffects; i++) {
     if (_effects[i].id == modeId) {
-      // Null bytecode pointer BEFORE freeing to prevent VM from accessing freed memory
-      uint8_t* bc = _effects[i].bytecode;
-      _effects[i].bytecode = nullptr;
-      if (bc) free(bc);
-      // Shift remaining entries down
-      for (uint8_t j = i; j + 1 < _numEffects; j++) {
-        _effects[j] = _effects[j + 1];
-      }
-      // Clear last slot to prevent stale data
-      memset(&_effects[_numEffects - 1], 0, sizeof(WfxEffect));
-      _numEffects--;
+      // Mark for deferred deletion — actual free happens in servicePendingDeletes()
+      // called from main loop, avoiding race with VM execution in the same task.
+      _effects[i].pendingDelete = true;
       return true;
     }
   }
@@ -216,17 +208,7 @@ bool FXLoader::unloadEffect(uint8_t modeId) {
 bool FXLoader::unloadEffectByName(const char* filename) {
   for (uint8_t i = 0; i < _numEffects; i++) {
     if (strcmp(_effects[i].filename, filename) == 0) {
-      // Null bytecode pointer BEFORE freeing to prevent VM from accessing freed memory
-      uint8_t* bc = _effects[i].bytecode;
-      _effects[i].bytecode = nullptr;
-      if (bc) free(bc);
-      // Shift remaining entries down
-      for (uint8_t j = i; j + 1 < _numEffects; j++) {
-        _effects[j] = _effects[j + 1];
-      }
-      // Clear last slot to prevent stale data
-      memset(&_effects[_numEffects - 1], 0, sizeof(WfxEffect));
-      _numEffects--;
+      _effects[i].pendingDelete = true;
       // Delete the file from filesystem
       String fullPath = String(FX_DIR) + "/" + filename;
       WLED_FS.remove(fullPath);
@@ -234,6 +216,26 @@ bool FXLoader::unloadEffectByName(const char* filename) {
     }
   }
   return false;
+}
+
+// Called from main loop — safe to free bytecode and shift array since
+// VM execution (vmTrampoline) runs in the same task context.
+void FXLoader::servicePendingDeletes() {
+  for (uint8_t i = 0; i < _numEffects; ) {
+    if (_effects[i].pendingDelete) {
+      if (_effects[i].bytecode) { free(_effects[i].bytecode); _effects[i].bytecode = nullptr; }
+      // Shift remaining entries down
+      for (uint8_t j = i; j + 1 < _numEffects; j++) {
+        _effects[j] = _effects[j + 1];
+      }
+      // Clear last slot to prevent stale data
+      memset(&_effects[_numEffects - 1], 0, sizeof(WfxEffect));
+      _numEffects--;
+      // don't increment i — re-check this slot (shifted entry)
+    } else {
+      i++;
+    }
+  }
 }
 
 WfxEffect* FXLoader::getEffect(uint8_t modeId) {

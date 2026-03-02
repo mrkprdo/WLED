@@ -206,7 +206,7 @@ static void handleUpload(AsyncWebServerRequest *request, const String& filename,
     }
 
     // Enforce /fx/ directory for .wfx uploads: strip path components and force prefix
-    if (finalname.indexOf(F(".wfx")) >= 0) {
+    if (finalname.endsWith(F(".wfx"))) {
       int lastSlash = finalname.lastIndexOf('/');
       String basename = finalname.substring(lastSlash + 1);
       finalname = String(FX_DIR) + "/" + basename;
@@ -227,9 +227,12 @@ static void handleUpload(AsyncWebServerRequest *request, const String& filename,
     } else {
       if (filename.indexOf(F("palette")) >= 0 && filename.indexOf(F(".json")) >= 0) loadCustomPalettes();
       // Load bytecode effect if a .wfx file was uploaded to /fx/
-      if (filename.indexOf(F(".wfx")) >= 0) {
-        String fxPath = filename;
-        if (fxPath.charAt(0) != '/') fxPath = '/' + fxPath;
+      if (filename.endsWith(F(".wfx"))) {
+        // Reconstruct the sanitized /fx/ path (matching the logic above)
+        String fxName = filename;
+        int lastSlash = fxName.lastIndexOf('/');
+        if (lastSlash >= 0) fxName = fxName.substring(lastSlash + 1);
+        String fxPath = String(FX_DIR) + "/" + fxName;
         FXLoader::loadEffect(fxPath.c_str());
       }
       request->send(200, FPSTR(CONTENT_TYPE_PLAIN), F("File Uploaded!"));
@@ -579,6 +582,7 @@ void initServer()
         while (remaining > 0) {
           size_t toRead = (remaining > 512) ? 512 : remaining;
           size_t got = f.read(buf, toRead);
+          if (got == 0) break; // read error — avoid infinite loop
           if (got < 512) memset(buf + got, 0, 512 - got); // pad last block
           response->write(buf, 512);
           remaining -= got;

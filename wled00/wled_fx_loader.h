@@ -20,6 +20,7 @@ struct Segment;
 struct WfxEffect {
   uint8_t   id;               // assigned mode ID in WS2812FX
   uint8_t   flags;            // from WFX header
+  bool      pendingDelete;    // marked for deferred deletion (safe across tasks)
   uint16_t  bcLen;            // bytecode length
   uint16_t  dataSize;         // min data buffer size needed
   char      metadata[FX_METADATA_MAX]; // WLED effect metadata string
@@ -52,6 +53,9 @@ public:
 
   // The trampoline function registered as mode_ptr for all bytecode effects
   static void vmTrampoline();
+
+  // Process pending deletes — call from main loop (not async context)
+  static void servicePendingDeletes();
 
 private:
   static WfxEffect _effects[FX_MAX_EFFECTS]; // fixed array — no reallocation, stable pointers
