@@ -943,7 +943,7 @@ function populateEffects()
 				}
 			}
 			// Add file menu for dynamically loaded bytecode effects
-			let extra = (typeof deleteFx === 'function' && id > 0) ? `<span class="e-icon flr" title="Options" style="cursor:pointer;font-size:14px;padding:10px;" onclick="event.stopPropagation();tglFxMenu(event,${id})">&#128196;</span>` : '';
+			let extra = (typeof deleteFx === 'function' && id > 0) ? `<span class="e-icon flr" title="Options" style="cursor:pointer;font-size:14px;padding:10px;" onclick="event.stopPropagation();tglFxMenu(event,${id})">&#9660;</span>` : '';
 			html += generateListItemHtml('fx',id,nm,'setFX',extra,fd);
 		}
 	}
