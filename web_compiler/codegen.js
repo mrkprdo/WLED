@@ -147,13 +147,20 @@ class Codegen {
   // --- Metadata ---
 
   _buildMetadata(effect) {
+    // WLED metadata format: Name@Sliders;Colors;Palette;Flags
     let meta = effect.name;
-    if (effect.meta && effect.meta.sliders.length > 0) {
+    if (effect.meta) {
       meta += '@';
-      meta += effect.meta.sliders.map(s => s.label).join(',');
-    }
-    if (effect.meta && effect.meta.palette) {
+      // Section 1: Slider labels
+      if (effect.meta.sliders.length > 0) {
+        meta += effect.meta.sliders.map(s => s.label).join(',');
+      }
+      // Section 2: Color slot labels (default)
       meta += ';!';
+      // Section 3: Palette
+      meta += ';' + (effect.meta.palette ? '!' : '');
+      // Section 4: Type flags (1=1D, 2=2D)
+      meta += ';' + (effect.meta.effectType === '2D' ? '2' : '1');
     }
     return meta;
   }
