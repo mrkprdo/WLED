@@ -523,6 +523,73 @@ void initServer()
     }
   });
 
+  // Backup all .wfx effect files as a tar archive
+  server.on(F("/fx/backup"), HTTP_GET, [](AsyncWebServerRequest *request) {
+    if (!correctPIN) { request->send(401, FPSTR(CONTENT_TYPE_PLAIN), FPSTR(s_unlock_cfg)); return; }
+    File root = WLED_FS.open(FX_DIR);
+    if (!root || !root.isDirectory()) { request->send(404, FPSTR(CONTENT_TYPE_PLAIN), F("No effects directory")); return; }
+
+    AsyncResponseStream *response = request->beginResponseStream(F("application/x-tar"));
+    response->addHeader(F("Content-Disposition"), F("attachment; filename=\"wled_effects.tar\""));
+
+    uint8_t hdr[512];
+    File f = root.openNextFile();
+    while (f) {
+      if (!f.isDirectory()) {
+        const char *name = f.name();
+        size_t fsize = f.size();
+
+        // Build tar header
+        memset(hdr, 0, 512);
+        // filename (field 0-99)
+        snprintf((char*)hdr, 100, "fx/%s", name);
+        // file mode
+        memcpy(hdr + 100, "0000644\0", 8);
+        // uid/gid
+        memcpy(hdr + 108, "0000000\0", 8);
+        memcpy(hdr + 116, "0000000\0", 8);
+        // file size in octal
+        snprintf((char*)hdr + 124, 12, "%011o", (unsigned int)fsize);
+        // mtime
+        memcpy(hdr + 136, "00000000000\0", 12);
+        // type flag: regular file
+        hdr[156] = '0';
+        // ustar magic
+        memcpy(hdr + 257, "ustar\0" "00", 8);
+
+        // Compute checksum (sum of all bytes with checksum field as spaces)
+        memset(hdr + 148, ' ', 8);
+        unsigned int cksum = 0;
+        for (int i = 0; i < 512; i++) cksum += hdr[i];
+        snprintf((char*)hdr + 148, 7, "%06o", cksum);
+        hdr[155] = '\0';
+
+        response->write(hdr, 512);
+
+        // Write file data in 512-byte blocks
+        uint8_t buf[512];
+        size_t remaining = fsize;
+        while (remaining > 0) {
+          size_t toRead = (remaining > 512) ? 512 : remaining;
+          size_t got = f.read(buf, toRead);
+          if (got < 512) memset(buf + got, 0, 512 - got); // pad last block
+          response->write(buf, 512);
+          remaining -= got;
+        }
+      }
+      f.close();
+      f = root.openNextFile();
+    }
+    root.close();
+
+    // Two empty 512-byte blocks to end the tar
+    memset(hdr, 0, 512);
+    response->write(hdr, 512);
+    response->write(hdr, 512);
+
+    request->send(response);
+  });
+
   createEditHandler(); // initialize "/edit" handler, access is protected by "correctPIN"
 
   static const char _update[] PROGMEM = "/update";
