@@ -14,7 +14,7 @@ class WS2812FX;
 struct Segment;
 
 #define FX_DIR          "/fx"
-#define FX_MAX_EFFECTS  32    // max number of loaded bytecode effects
+#define FX_MAX_EFFECTS  180   // max number of loaded bytecode effects
 #define FX_METADATA_MAX 128   // max metadata string length
 
 struct WfxEffect {

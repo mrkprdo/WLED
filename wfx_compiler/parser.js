@@ -18,7 +18,7 @@ function error(msg, tok) {
 
 const Node = {
   Effect:   (name, meta, dataDecls, renderBody) => ({ type: 'Effect', name, meta, dataDecls, renderBody }),
-  Meta:     (sliders, effectType, palette) => ({ type: 'Meta', sliders, effectType, palette }),
+  Meta:     (sliders, effectType, palette, audioReactive) => ({ type: 'Meta', sliders, effectType, palette, audioReactive }),
   Slider:   (name, label, defaultVal) => ({ type: 'Slider', name, label, defaultVal }),
   DataDecl: (name, sizeExpr) => ({ type: 'DataDecl', name, sizeExpr }),
   Let:      (name, value) => ({ type: 'Let', name, value }),
@@ -85,6 +85,7 @@ class Parser {
     const sliders = [];
     let effectType = '1D';
     let palette = false;
+    let audioReactive = false;
 
     while (!this.lex.check(T.PUNCT, '}')) {
       if (this.lex.match(T.KEYWORD, 'slider')) {
@@ -107,13 +108,19 @@ class Parser {
           error(`Expected 'true' or 'false', got '${tok.value}'`, tok);
         }
         palette = tok.value === 'true';
+      } else if (this.lex.match(T.KEYWORD, 'audio_reactive')) {
+        const tok = this.lex.expect(T.KEYWORD);
+        if (tok.value !== 'true' && tok.value !== 'false') {
+          error(`Expected 'true' or 'false', got '${tok.value}'`, tok);
+        }
+        audioReactive = tok.value === 'true';
       } else {
         const tok = this.lex.peek();
         error(`Unexpected token '${tok.value}' in meta block`, tok);
       }
     }
     this.lex.expect(T.PUNCT, '}');
-    return Node.Meta(sliders, effectType, palette);
+    return Node.Meta(sliders, effectType, palette, audioReactive);
   }
 
   // data name[size]

@@ -75,7 +75,7 @@ meta {
 Up to 4 sliders are supported. They map to built-in variables in order:
 
 | Position | Variable    |
-|----------|-------------|
+| -------- | ----------- |
 | 1st      | `speed`     |
 | 2nd      | `intensity` |
 | 3rd      | `custom1`   |
@@ -96,27 +96,27 @@ Maximum 11 local variables. Variables inside `if`/`for`/`while` blocks are scope
 
 These are always available without declaration:
 
-| Variable   | Description                          | Access     |
-|------------|--------------------------------------|------------|
-| `speed`    | Segment speed (0-255)                | read-only  |
-| `intensity`| Segment intensity (0-255)            | read-only  |
-| `custom1`  | Segment custom1 slider (0-255)       | read-only  |
-| `custom2`  | Segment custom2 slider (0-255)       | read-only  |
-| `custom3`  | Segment custom3 slider (0-255)       | read-only  |
-| `check1`   | Segment checkbox 1 (0 or 1)         | read-only  |
-| `check2`   | Segment checkbox 2 (0 or 1)         | read-only  |
-| `check3`   | Segment checkbox 3 (0 or 1)         | read-only  |
-| `color0`   | Primary segment color (32-bit RGBW)  | read-only  |
-| `color1`   | Secondary segment color              | read-only  |
-| `color2`   | Tertiary segment color               | read-only  |
-| `LEN`      | Segment length (number of LEDs)      | read-only  |
-| `NOW`      | Current time in milliseconds         | read-only  |
-| `CALL`     | Frame call counter                   | read-only  |
-| `WIDTH`    | Segment width (2D matrix)            | read-only  |
-| `HEIGHT`   | Segment height (2D matrix)           | read-only  |
-| `aux0`     | Persistent 16-bit storage            | read/write |
-| `aux1`     | Persistent 16-bit storage            | read/write |
-| `step_val` | Persistent 32-bit step counter       | read/write |
+| Variable    | Description                         | Access     |
+| ----------- | ----------------------------------- | ---------- |
+| `speed`     | Segment speed (0-255)               | read-only  |
+| `intensity` | Segment intensity (0-255)           | read-only  |
+| `custom1`   | Segment custom1 slider (0-255)      | read-only  |
+| `custom2`   | Segment custom2 slider (0-255)      | read-only  |
+| `custom3`   | Segment custom3 slider (0-255)      | read-only  |
+| `check1`    | Segment checkbox 1 (0 or 1)         | read-only  |
+| `check2`    | Segment checkbox 2 (0 or 1)         | read-only  |
+| `check3`    | Segment checkbox 3 (0 or 1)         | read-only  |
+| `color0`    | Primary segment color (32-bit RGBW) | read-only  |
+| `color1`    | Secondary segment color             | read-only  |
+| `color2`    | Tertiary segment color              | read-only  |
+| `LEN`       | Segment length (number of LEDs)     | read-only  |
+| `NOW`       | Current time in milliseconds        | read-only  |
+| `CALL`      | Frame call counter                  | read-only  |
+| `WIDTH`     | Segment width (2D matrix)           | read-only  |
+| `HEIGHT`    | Segment height (2D matrix)          | read-only  |
+| `aux0`      | Persistent 16-bit storage           | read/write |
+| `aux1`      | Persistent 16-bit storage           | read/write |
+| `step_val`  | Persistent 32-bit step counter      | read/write |
 
 ### Control Flow
 
@@ -193,6 +193,7 @@ render {
 **Logical:** `and`, `or` (short-circuit), `not` / `~` (bitwise NOT)
 
 **Precedence** (lowest to highest):
+
 1. `or`
 2. `and`
 3. `==` `!=` `<` `>` `<=` `>=`
@@ -212,67 +213,67 @@ render {
 
 ### Pixel Operations
 
-| Function | Description |
-|----------|-------------|
-| `pixel(i, color)` | Set pixel at index `i` to `color` |
-| `pixel2d(x, y, color)` | Set pixel at 2D coordinates |
-| `get_pixel(i)` | Get color at pixel index (returns 32-bit color) |
-| `get_pixel2d(x, y)` | Get color at 2D coordinates |
-| `fill(color)` | Fill entire segment with a color |
-| `fade(amount)` | Fade all pixels toward black (0=full fade, 255=no fade) |
-| `blur(amount)` | Blur 1D pixel data (0-255) |
-| `blur2d(amount)` | Blur 2D matrix pixel data (0-255) |
+| Function               | Description                                             |
+| ---------------------- | ------------------------------------------------------- |
+| `pixel(i, color)`      | Set pixel at index `i` to `color`                       |
+| `pixel2d(x, y, color)` | Set pixel at 2D coordinates                             |
+| `get_pixel(i)`         | Get color at pixel index (returns 32-bit color)         |
+| `get_pixel2d(x, y)`    | Get color at 2D coordinates                             |
+| `fill(color)`          | Fill entire segment with a color                        |
+| `fade(amount)`         | Fade all pixels toward black (0=full fade, 255=no fade) |
+| `blur(amount)`         | Blur 1D pixel data (0-255)                              |
+| `blur2d(amount)`       | Blur 2D matrix pixel data (0-255)                       |
 
 ### Color Functions
 
-| Function | Description |
-|----------|-------------|
-| `rgb(r, g, b)` | Create color from RGB values (0-255 each) |
-| `rgbw(r, g, b, w)` | Create color from RGBW values |
-| `blend(c1, c2, amount)` | Blend two colors (0=c1, 255=c2) |
-| `color_fade(color, amount)` | Dim a color (0=off, 255=full) |
-| `color_add(c1, c2)` | Additive color mixing with saturation |
-| `palette(index)` | Look up color from active palette (0-255) |
-| `palette_x(index, mapping, wrap)` | Extended palette lookup |
-| `color_wheel(pos)` | Rainbow color at position (0-255) |
-| `red(color)` | Extract red channel |
-| `green(color)` | Extract green channel |
-| `blue(color)` | Extract blue channel |
-| `white(color)` | Extract white channel |
+| Function                          | Description                               |
+| --------------------------------- | ----------------------------------------- |
+| `rgb(r, g, b)`                    | Create color from RGB values (0-255 each) |
+| `rgbw(r, g, b, w)`                | Create color from RGBW values             |
+| `blend(c1, c2, amount)`           | Blend two colors (0=c1, 255=c2)           |
+| `color_fade(color, amount)`       | Dim a color (0=off, 255=full)             |
+| `color_add(c1, c2)`               | Additive color mixing with saturation     |
+| `palette(index)`                  | Look up color from active palette (0-255) |
+| `palette_x(index, mapping, wrap)` | Extended palette lookup                   |
+| `color_wheel(pos)`                | Rainbow color at position (0-255)         |
+| `red(color)`                      | Extract red channel                       |
+| `green(color)`                    | Extract green channel                     |
+| `blue(color)`                     | Extract blue channel                      |
+| `white(color)`                    | Extract white channel                     |
 
 ### Math Functions
 
-| Function | Description |
-|----------|-------------|
-| `sin8(x)` | Fast 8-bit sine (input 0-255, output 0-255) |
-| `cos8(x)` | Fast 8-bit cosine |
-| `sin16(x)` | 16-bit sine (input 0-65535, output -32768..32767) |
+| Function                | Description                                             |
+| ----------------------- | ------------------------------------------------------- |
+| `sin8(x)`               | Fast 8-bit sine (input 0-255, output 0-255)             |
+| `cos8(x)`               | Fast 8-bit cosine                                       |
+| `sin16(x)`              | 16-bit sine (input 0-65535, output -32768..32767)       |
 | `beat8(bpm, low, high)` | Sine wave oscillating between `low` and `high` at `bpm` |
-| `tri8(x)` | Triangle wave (0-255 in, 0-255 out) |
-| `quad8(x)` | Quadratic ease wave |
-| `scale8(value, scale)` | Scale 8-bit value: `(value * scale) / 256` |
-| `qadd8(a, b)` | Saturating add (clamped at 255) |
-| `qsub8(a, b)` | Saturating subtract (clamped at 0) |
-| `random()` | Random 0-255 |
-| `random(max)` | Random 0 to max-1 |
-| `random(min, max)` | Random min to max-1 |
-| `random16()` | Random 0-65535 |
-| `noise(x)` | 1D Perlin noise (16-bit input, 8-bit output) |
-| `noise2(x, y)` | 2D Perlin noise |
-| `noise3(x, y, z)` | 3D Perlin noise |
-| `sqrt(x)` | Integer square root |
-| `abs(x)` | Absolute value |
-| `min(a, b)` | Smaller of two values |
-| `max(a, b)` | Larger of two values |
+| `tri8(x)`               | Triangle wave (0-255 in, 0-255 out)                     |
+| `quad8(x)`              | Quadratic ease wave                                     |
+| `scale8(value, scale)`  | Scale 8-bit value: `(value * scale) / 256`              |
+| `qadd8(a, b)`           | Saturating add (clamped at 255)                         |
+| `qsub8(a, b)`           | Saturating subtract (clamped at 0)                      |
+| `random()`              | Random 0-255                                            |
+| `random(max)`           | Random 0 to max-1                                       |
+| `random(min, max)`      | Random min to max-1                                     |
+| `random16()`            | Random 0-65535                                          |
+| `noise(x)`              | 1D Perlin noise (16-bit input, 8-bit output)            |
+| `noise2(x, y)`          | 2D Perlin noise                                         |
+| `noise3(x, y, z)`       | 3D Perlin noise                                         |
+| `sqrt(x)`               | Integer square root                                     |
+| `abs(x)`                | Absolute value                                          |
+| `min(a, b)`             | Smaller of two values                                   |
+| `max(a, b)`             | Larger of two values                                    |
 
 ### 2D Drawing
 
-| Function | Description |
-|----------|-------------|
-| `draw_line(x0, y0, x1, y1, color)` | Draw a line |
-| `draw_circle(cx, cy, radius, color)` | Draw circle outline |
-| `fill_circle(cx, cy, radius, color)` | Draw filled circle |
-| `move_pixels(dir, delta, wrap)` | Move all pixels in a direction |
+| Function                             | Description                    |
+| ------------------------------------ | ------------------------------ |
+| `draw_line(x0, y0, x1, y1, color)`   | Draw a line                    |
+| `draw_circle(cx, cy, radius, color)` | Draw circle outline            |
+| `fill_circle(cx, cy, radius, color)` | Draw filled circle             |
+| `move_pixels(dir, delta, wrap)`      | Move all pixels in a direction |
 
 ---
 
@@ -443,20 +444,76 @@ effect "Scan" {
 }
 ```
 
+### Audio-Reactive Effects
+
+Effects can react to audio input from the AudioReactive usermod (microphone/line-in). Add `audio_reactive true` to the meta block to enable audio features:
+
+```
+effect "Volume Pulse" {
+  meta {
+    slider speed "Speed"
+    slider intensity "Sensitivity"
+    palette true
+    audio_reactive true
+  }
+
+  render {
+    let vol = volume * intensity / 255
+    let bass = audio_bass()
+
+    for i in 0..LEN {
+      let bri = scale8(vol, sin8(i * 255 / LEN))
+      pixel(i, color_fade(palette(bass + i), bri))
+    }
+
+    frame(speed)
+  }
+}
+```
+
+#### Audio Variables
+
+| Variable | Description                    | Range |
+| -------- | ------------------------------ | ----- |
+| `volume` | Smoothed audio volume level    | 0-255 |
+| `peak`   | Beat/peak detection flag       | 0 or 1|
+
+#### Audio Functions
+
+| Function         | Description                                  | Range |
+| ---------------- | -------------------------------------------- | ----- |
+| `fft(bin)`       | Get FFT result for frequency bin (0-15)      | 0-255 |
+| `audio_bass()`   | Average of low-frequency bins 0-3            | 0-255 |
+| `audio_mid()`    | Average of mid-frequency bins 4-7            | 0-255 |
+| `audio_treble()` | Average of high-frequency bins 8-15          | 0-255 |
+
+**FFT bin mapping** (16 bins, logarithmically spaced):
+- Bins 0-3: Bass (sub-bass to low bass)
+- Bins 4-7: Midrange (upper bass to low mids)
+- Bins 8-15: Treble (high mids to high frequencies)
+
+**Notes:**
+- Audio data requires the AudioReactive usermod or sound simulation
+- If no audio source is available, all audio variables/functions return 0
+- The `audio_reactive true` flag tells the VM to look up audio data -- without it, audio functions always return 0
+- `volume` is smoothed (less jittery than raw samples) -- good for brightness
+- `peak` is best for triggering events (spawning particles, color changes)
+- `fft()` gives fine-grained frequency control for spectrum analyzers
+
 ---
 
 ## VM Safety Limits
 
-| Limit | Value |
-|-------|-------|
-| Max cycles per frame | 50,000 (watchdog) |
-| Max data allocation | 4,096 bytes |
-| Max bytecode size | 65,535 bytes |
-| Max local variables | 11 |
-| Max expression depth | 5 temp registers |
-| Division by zero | Returns 0 |
-| Out-of-bounds pixel | Silently ignored |
-| Out-of-bounds data | Read returns 0, write ignored |
+| Limit                | Value                         |
+| -------------------- | ----------------------------- |
+| Max cycles per frame | 50,000 (watchdog)             |
+| Max data allocation  | 4,096 bytes                   |
+| Max bytecode size    | 65,535 bytes                  |
+| Max local variables  | 11                            |
+| Max expression depth | 5 temp registers              |
+| Division by zero     | Returns 0                     |
+| Out-of-bounds pixel  | Silently ignored              |
+| Out-of-bounds data   | Read returns 0, write ignored |
 
 ## Tips
 

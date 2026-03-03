@@ -16,13 +16,19 @@ WledVM::WledVM() : callDepth(0), pc(0), cycles(0), bcLen(0) {
   memset(callStack, 0, sizeof(callStack));
 }
 
-uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg) {
+uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg,
+                         float* vol, uint8_t* fft, uint8_t* peak) {
   // Reset state
   pc = 0;
   bcLen = len;
   cycles = 0;
   callDepth = 0;
   memset(regs, 0, sizeof(regs));
+
+  // Store audio pointers (null if unavailable)
+  _audioVol = vol;
+  _audioFFT = fft;
+  _audioPeak = peak;
 
   // Auto-populate parameter registers
   regs[REG_P0] = seg.speed;
@@ -490,6 +496,47 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg) {
     case OP_FCOS: {
       uint8_t d = readU8(bc), a = readU8(bc);
       setFloat(d, cos_approx(getFloat(a)));
+    } break;
+
+    // ---- Audio-reactive ----
+    case OP_GVOL: {
+      uint8_t d = readU8(bc);
+      setReg(d, _audioVol ? (int32_t)(*_audioVol) : 0);
+    } break;
+    case OP_GPEAK: {
+      uint8_t d = readU8(bc);
+      setReg(d, _audioPeak ? (int32_t)(*_audioPeak) : 0);
+    } break;
+    case OP_GFFT: {
+      uint8_t d = readU8(bc), a = readU8(bc);
+      uint8_t bin = (uint8_t)(getReg(a)) & 0x0F;
+      setReg(d, _audioFFT ? (int32_t)_audioFFT[bin] : 0);
+    } break;
+    case OP_ABASS: {
+      uint8_t d = readU8(bc);
+      if (_audioFFT) {
+        setReg(d, ((int32_t)_audioFFT[0] + _audioFFT[1] + _audioFFT[2] + _audioFFT[3]) / 4);
+      } else {
+        setReg(d, 0);
+      }
+    } break;
+    case OP_AMID: {
+      uint8_t d = readU8(bc);
+      if (_audioFFT) {
+        setReg(d, ((int32_t)_audioFFT[4] + _audioFFT[5] + _audioFFT[6] + _audioFFT[7]) / 4);
+      } else {
+        setReg(d, 0);
+      }
+    } break;
+    case OP_ATREB: {
+      uint8_t d = readU8(bc);
+      if (_audioFFT) {
+        int32_t sum = 0;
+        for (uint8_t b = 8; b < 16; b++) sum += _audioFFT[b];
+        setReg(d, sum / 8);
+      } else {
+        setReg(d, 0);
+      }
     } break;
 
     case OP_NOP:

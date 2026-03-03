@@ -60,6 +60,12 @@ const BUILTINS = {
   min:         { op: OP.MIN,   args: 2, hasDestReg: true, vmOperands: 3 },
   max:         { op: OP.MAX,   args: 2, hasDestReg: true, vmOperands: 3 },
 
+  // Audio-reactive
+  fft:          { op: OP.GFFT,  args: 1, hasDestReg: true, vmOperands: 2 },
+  audio_bass:   { op: OP.ABASS, args: 0, hasDestReg: true, vmOperands: 1 },
+  audio_mid:    { op: OP.AMID,  args: 0, hasDestReg: true, vmOperands: 1 },
+  audio_treble: { op: OP.ATREB, args: 0, hasDestReg: true, vmOperands: 1 },
+
   // Data buffer
   alloc:       { op: OP.ALLOC, args: 1, hasDestReg: false, vmOperands: 1 },
 
@@ -95,6 +101,9 @@ const OPCODE_VARS = {
   aux0:     { get: OP.GAUX, set: OP.SAUX, idx: 0 },
   aux1:     { get: OP.GAUX, set: OP.SAUX, idx: 1 },
   step_val: { get: OP.GSTP, set: OP.SSTP, idx: 0 },
+  // Audio-reactive
+  volume:   { get: OP.GVOL },
+  peak:     { get: OP.GPEAK },
 };
 
 class Codegen {
@@ -689,6 +698,7 @@ class Codegen {
     if (this.ast.meta) {
       if (this.ast.meta.effectType === '2D') flags |= WFX.FLAG_2D;
       if (this.ast.meta.palette) flags |= WFX.FLAG_PALETTE;
+      if (this.ast.meta.audioReactive) flags |= WFX.FLAG_AUDIO;
     }
     return flags;
   }

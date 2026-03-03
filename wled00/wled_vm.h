@@ -160,6 +160,14 @@ enum WledVMOp : uint8_t {
   OP_FSIN  = 0xA6,  // fd, fa — sin(fa)
   OP_FCOS  = 0xA7,  // fd, fa — cos(fa)
 
+  // Audio-reactive (require WFX_FLAG_AUDIO)
+  OP_GVOL  = 0xB0,  // rd — get smoothed volume (0-255)
+  OP_GPEAK = 0xB1,  // rd — get peak flag (0 or 1)
+  OP_GFFT  = 0xB2,  // rd, ra — get fftResult[ra & 0x0F] (0-255)
+  OP_ABASS = 0xB3,  // rd — avg of fft bins 0-3
+  OP_AMID  = 0xB4,  // rd — avg of fft bins 4-7
+  OP_ATREB = 0xB5,  // rd — avg of fft bins 8-15
+
   OP_NOP   = 0xFF
 };
 
@@ -188,9 +196,15 @@ public:
   WledVM();
 
   // Execute bytecode for one frame. Returns frame delay in ms.
-  uint16_t execute(const uint8_t* bytecode, uint16_t len, Segment& seg);
+  // Audio pointers are optional — null if audio unavailable or effect doesn't use audio.
+  uint16_t execute(const uint8_t* bytecode, uint16_t len, Segment& seg,
+                   float* vol = nullptr, uint8_t* fft = nullptr, uint8_t* peak = nullptr);
 
 private:
+  // Audio source pointers (set per execute() call, null-safe)
+  float*   _audioVol;   // -> volumeSmth
+  uint8_t* _audioFFT;   // -> fftResult[16]
+  uint8_t* _audioPeak;  // -> samplePeak
   // Register file (all 32-bit)
   int32_t  regs[REG_COUNT];
 

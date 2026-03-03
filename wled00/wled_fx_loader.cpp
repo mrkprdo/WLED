@@ -30,7 +30,28 @@ void FXLoader::vmTrampoline() {
     }
   }
 
-  vmInstance.execute(fx->bytecode, fx->bcLen, SEGMENT);
+  // Look up audio data only for effects that declare WFX_FLAG_AUDIO
+  float* volSmth = nullptr;
+  uint8_t* fftData = nullptr;
+  uint8_t* peak = nullptr;
+
+  if (fx->flags & WFX_FLAG_AUDIO) {
+    um_data_t* um_data = nullptr;
+    if (UsermodManager::getUMData(&um_data, USERMOD_ID_AUDIOREACTIVE) && um_data) {
+      volSmth = (float*)um_data->u_data[0];    // volumeSmth
+      fftData = (uint8_t*)um_data->u_data[2];  // fftResult[16]
+      peak    = (uint8_t*)um_data->u_data[3];   // samplePeak
+    } else {
+      um_data = simulateSound(SEGMENT.soundSim);
+      if (um_data) {
+        volSmth = (float*)um_data->u_data[0];
+        fftData = (uint8_t*)um_data->u_data[2];
+        peak    = (uint8_t*)um_data->u_data[3];
+      }
+    }
+  }
+
+  vmInstance.execute(fx->bytecode, fx->bcLen, SEGMENT, volSmth, fftData, peak);
 }
 
 void FXLoader::init() {

@@ -16,7 +16,7 @@ const KEYWORDS = new Set([
   'if', 'else', 'for', 'in', 'while', 'step',
   'frame', 'slider', 'type', 'palette',
   'true', 'false', 'and', 'or', 'not',
-  'default',
+  'default', 'audio_reactive',
 ]);
 
 // Two-character operators (checked before single-char)
