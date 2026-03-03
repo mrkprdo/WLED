@@ -25,8 +25,8 @@ effect "My Effect" {
 ### 2. Compile it
 
 ```bash
-cd web_compiler
-node compiler.js ../effects/my_effect.wled -o ../effects/my_effect.wfx
+cd wfx_compiler
+node compiler.js ../wfx_effects/my_effect.wled -o ../wfx_effects/my_effect.wfx
 ```
 
 ### 3. Upload
