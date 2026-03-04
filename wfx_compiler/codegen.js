@@ -356,7 +356,16 @@ class Codegen {
       } else if (v.type === 'opcode' && v.info.set) {
         const valReg = this._pushTmp();
         this._genExpr(stmt.value, valReg);
-        this._emitOp2(v.info.set, valReg, v.info.idx || 0);
+        if (v.info.set === OP.SAUX) {
+          // SAUX: [op, n, a] — n is aux index, a is value register
+          this._emitByte(v.info.set);
+          this._emitByte(v.info.idx);
+          this._emitByte(valReg);
+        } else {
+          // SSTP: [op, a] — a is value register (1 operand byte)
+          this._emitByte(v.info.set);
+          this._emitByte(valReg);
+        }
         this._popTmp();
       } else {
         throw new CodegenError(`Cannot assign to '${target.name}'`);
