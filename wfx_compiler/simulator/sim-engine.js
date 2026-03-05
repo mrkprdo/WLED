@@ -633,12 +633,30 @@ export class SimEngine {
         case OP.SPXC: {
           const a = readU8(), c = readU8();
           const idx = getReg(a);
-          if (idx >= 0 && idx < state.LEN) pixels[idx] = getColor(c);
+          if (idx >= 0 && idx < state.LEN) {
+            const col = getColor(c);
+            pixels[idx] = col;
+            // Mirror 1D write to 2D grid (like WLED's setPixelColor on 2D segments)
+            if (state.is2D) {
+              const px = idx % w, py = Math.floor(idx / w);
+              if (py < h) pixels2d[py][px] = col;
+            }
+          }
         } break;
         case OP.GPXC: {
           const d = readU8(), a = readU8();
           const idx = getReg(a);
-          setColor(d, (idx >= 0 && idx < state.LEN) ? pixels[idx] : 0);
+          if (idx >= 0 && idx < state.LEN) {
+            // In 2D mode, read from the 2D grid (consistent with SPXC mirroring)
+            if (state.is2D) {
+              const px = idx % w, py = Math.floor(idx / w);
+              setColor(d, (py < h) ? pixels2d[py][px] : 0);
+            } else {
+              setColor(d, pixels[idx]);
+            }
+          } else {
+            setColor(d, 0);
+          }
         } break;
         case OP.SPXY: {
           const a = readU8(), b = readU8(), c = readU8();
@@ -662,12 +680,26 @@ export class SimEngine {
           const bgColor = seg.colors[1] || 0;
           if (state.is2D) {
             fade_out_2d(pixels2d, w, h, rate, bgColor);
+            // Sync pixels1d from pixels2d so 1D reads stay consistent
+            for (let y2 = 0; y2 < h; y2++)
+              for (let x2 = 0; x2 < w; x2++)
+                pixels[y2 * w + x2] = pixels2d[y2][x2];
+          } else {
+            fade_out_1d(pixels, rate, bgColor);
           }
-          fade_out_1d(pixels, rate, bgColor);
         } break;
         case OP.BLUR: {
           const a = readU8();
-          blur1d(pixels, u8(getReg(a)));
+          const bv = u8(getReg(a));
+          if (state.is2D) {
+            // In 2D mode, blur the 2D grid (1D effects using blur on 2D)
+            blur2d(pixels2d, w, h, bv, bv);
+            for (let y2 = 0; y2 < h; y2++)
+              for (let x2 = 0; x2 < w; x2++)
+                pixels[y2 * w + x2] = pixels2d[y2][x2];
+          } else {
+            blur1d(pixels, bv);
+          }
         } break;
         case OP.BLR2: {
           const a = readU8();
