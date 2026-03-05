@@ -74,6 +74,13 @@ const BUILTINS = {
   draw_circle: { op: OP.DCIRC, args: 4, hasDestReg: false, vmOperands: 4 },
   fill_circle: { op: OP.FCIRC, args: 4, hasDestReg: false, vmOperands: 4 },
   move_pixels: { op: OP.MOVEP, args: 3, hasDestReg: false, vmOperands: 3 },
+
+  // Text operations (2D)
+  draw_char:   { op: OP.DCHR, args: 5, hasDestReg: false, vmOperands: 5 },
+  name_char:   { op: OP.GCHR, args: 1, hasDestReg: true,  vmOperands: 2 },
+  name_len:    { op: OP.GNLN, args: 0, hasDestReg: true,  vmOperands: 1 },
+  font_w:      { op: OP.GFNW, args: 1, hasDestReg: true,  vmOperands: 2 },
+  font_h:      { op: OP.GFNH, args: 1, hasDestReg: true,  vmOperands: 2 },
 };
 
 // Special variable names mapped to registers
@@ -100,7 +107,7 @@ const OPCODE_VARS = {
   color2:   { get: OP.GCOL, idx: 2 },
   aux0:     { get: OP.GAUX, set: OP.SAUX, idx: 0 },
   aux1:     { get: OP.GAUX, set: OP.SAUX, idx: 1 },
-  step_val: { get: OP.GSTP, set: OP.SSTP, idx: 0 },
+  step_val: { get: OP.GSTP, set: OP.SSTP },
   // Audio-reactive
   volume:   { get: OP.GVOL },
   peak:     { get: OP.GPEAK },
