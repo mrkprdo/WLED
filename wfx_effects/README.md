@@ -31,17 +31,18 @@ node compiler.js ../wfx_effects/my_effect.wled -o ../wfx_effects/my_effect.wfx
 
 ### 3. Upload
 
-Upload the `.wfx` file to your WLED device via the "Add Effects" button in the web UI. The effect appears in the effects list after reboot.
+Upload the `.wfx` file to your WLED device via the "Add Effects" button in the web UI. The effect appears in the effects list immediately — no reboot needed.
 
 ## CLI Reference
 
 ```bash
-node compiler.js <input.wled> [-o output.wfx]   # compile
+node compiler.js <input.wled> [-o output.wfx]   # compile single file
 node compiler.js <input.wled> --ast              # dump AST (debug)
 node compiler.js <input.wled> --hex              # dump bytecode hex (debug)
+node compiler.js <directory>                     # compile all .wled files in directory
 ```
 
-If `-o` is omitted, the output defaults to the input filename with `.wfx` extension.
+If `-o` is omitted, the output defaults to the input filename with `.wfx` extension. Batch mode compiles every `.wled` file in the given directory, outputting `.wfx` files alongside the sources.
 
 ---
 
@@ -69,6 +70,7 @@ meta {
   slider intensity "Scale" default 128
   type 2D              // 1D (default) or 2D
   palette true         // show palette selector (default: false)
+  audio_reactive true  // enable audio functions (default: false)
 }
 ```
 

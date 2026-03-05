@@ -37,8 +37,7 @@ This produces a `.wfx` file you can upload to your device.
 To compile **all** the included effects at once:
 
 ```
-cd wfx_compiler
-for f in ../wfx_effects/*.wled; do node compiler.js "$f"; done
+node compiler.js ../wfx_effects/
 ```
 
 The compiled `.wfx` files will appear next to each `.wled` source file in the `wfx_effects` folder.
@@ -61,13 +60,13 @@ Once uploaded, your effects appear in the normal effects list alongside Solid. J
 
 Effects respond to the same controls as always:
 
-- **Speed** slider — controls animation speed
+- **Speed** slider — controls animation speed (higher = faster)
 - **Intensity** slider — controls effect intensity or density
-- **Custom 1 / Custom 2** sliders — additional parameters (if the effect supports them)
+- **Custom 1 / Custom 2 / Custom 3** sliders — additional parameters (if the effect supports them)
 - **Color pickers** — set segment colors used by the effect
 - **Palette selector** — choose a color palette (if the effect supports palettes)
 
-Which sliders and options an effect uses depends on how it was written. Some effects use all of them, others only use speed.
+Only the sliders an effect actually uses are shown. For example, static pattern effects that run at a fixed frame rate hide the speed slider entirely.
 
 ## Deleting Effects
 

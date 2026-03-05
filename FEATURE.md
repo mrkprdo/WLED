@@ -93,12 +93,12 @@ Minimal footprint in the existing codebase:
 
 A browser-based WFX effect previewer for development and testing without hardware:
 
-- **`serve.js`**: HTTP server that serves the simulator UI and provides a `POST /compile` endpoint for live `.wled` → `.wfx` compilation
-- **`sim-engine.js`**: Full JS reimplementation of the C++ VM (~85 opcodes), including all text, 2D, audio, and float operations
+- **`serve.js`**: HTTP server that serves the simulator UI, provides a `POST /compile` endpoint for live `.wled` → `.wfx` compilation, and exposes a file management API (`GET/PUT/DELETE /effects/<name>`) for the built-in code editor
+- **`sim-engine.js`**: Full JS reimplementation of the C++ VM (~85 opcodes), including all text, 2D, audio, and float operations. 1D effects render correctly on 2D grids via automatic pixel mirroring
 - **`renderer.js`**: Canvas-based LED strip/matrix renderer with glow effects for small grids
 - **`fonts.js`**: 5 bitmap fonts (4x6 through 5x12) extracted from WLED firmware headers
 - **`palettes.js`**: All 72 WLED palettes with `colorFromPalette()` interpolation
-- **`index.html`**: Full simulator UI with speed/intensity/custom sliders, palette selector, segment name input, 1D/2D mode toggle, and drag-and-drop `.wled`/`.wfx` file loading
+- **`index.html`**: Split-panel UI with a WLED-Lang code editor (left) and LED simulator (right). Editor features: file browser, Ctrl+Enter compile & run, Ctrl+S save, syntax-aware tab indentation. Simulator: speed/intensity/custom sliders, palette selector, segment name input, 1D/2D mode toggle, drag-and-drop file loading
 
 Start with `node wfx_compiler/simulator/serve.js` — auto-opens a browser at `http://localhost:3456`.
 
