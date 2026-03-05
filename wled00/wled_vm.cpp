@@ -454,11 +454,52 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg,
       uint8_t d = readU8(bc), delta = readU8(bc), wrap = readU8(bc);
       seg.move((uint8_t)getReg(d), (uint8_t)getReg(delta), (bool)getReg(wrap));
     } break;
+
+    // ---- Text operations (2D) ----
+    case OP_DCHR: {
+      uint8_t chr_r = readU8(bc), x_r = readU8(bc), y_r = readU8(bc);
+      uint8_t font_r = readU8(bc), col_r = readU8(bc);
+      static const uint8_t fw[] = {4, 5, 6, 7, 5};
+      static const uint8_t fh[] = {6, 8, 8, 9, 12};
+      int fi = constrain(getReg(font_r), 0, 4);
+      uint32_t col = getColor(col_r);
+      seg.drawCharacter((unsigned char)getReg(chr_r),
+                        (int16_t)getReg(x_r), (int16_t)getReg(y_r),
+                        fw[fi], fh[fi], col, col, 0);
+    } break;
+    case OP_GCHR: {
+      uint8_t d = readU8(bc), a = readU8(bc);
+      int idx = getReg(a);
+      if (seg.name && idx >= 0 && idx < (int)strlen(seg.name)) {
+        setReg(d, (int32_t)(unsigned char)seg.name[idx]);
+      } else {
+        setReg(d, 0);
+      }
+    } break;
+    case OP_GNLN: {
+      uint8_t d = readU8(bc);
+      setReg(d, seg.name ? (int32_t)strlen(seg.name) : 0);
+    } break;
+    case OP_GFNW: {
+      uint8_t d = readU8(bc), a = readU8(bc);
+      static const uint8_t fw[] = {4, 5, 6, 7, 5};
+      setReg(d, fw[constrain(getReg(a), 0, 4)]);
+    } break;
+    case OP_GFNH: {
+      uint8_t d = readU8(bc), a = readU8(bc);
+      static const uint8_t fh[] = {6, 8, 8, 9, 12};
+      setReg(d, fh[constrain(getReg(a), 0, 4)]);
+    } break;
 #else
     case OP_DLINE: { readU8(bc); readU8(bc); readU8(bc); readU8(bc); readU8(bc); } break;
     case OP_DCIRC: { readU8(bc); readU8(bc); readU8(bc); readU8(bc); } break;
     case OP_FCIRC: { readU8(bc); readU8(bc); readU8(bc); readU8(bc); } break;
     case OP_MOVEP: { readU8(bc); readU8(bc); readU8(bc); } break;
+    case OP_DCHR:  { readU8(bc); readU8(bc); readU8(bc); readU8(bc); readU8(bc); } break;
+    case OP_GCHR:  { readU8(bc); readU8(bc); } break;
+    case OP_GNLN:  { readU8(bc); } break;
+    case OP_GFNW:  { readU8(bc); readU8(bc); } break;
+    case OP_GFNH:  { readU8(bc); readU8(bc); } break;
 #endif
 
     // ---- Float Operations ----

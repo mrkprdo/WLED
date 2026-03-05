@@ -275,6 +275,24 @@ render {
 | `fill_circle(cx, cy, radius, color)` | Draw filled circle             |
 | `move_pixels(dir, delta, wrap)`      | Move all pixels in a direction |
 
+### Text Functions (2D)
+
+| Function                             | Description                                        |
+| ------------------------------------ | -------------------------------------------------- |
+| `draw_char(ch, x, y, font, color)`   | Draw character `ch` at (x,y) using font and color  |
+| `name_char(index)`                   | Get character code of segment name at index         |
+| `name_len()`                         | Get length of segment name (0 if unset)             |
+| `font_w(font)`                       | Get font width in pixels (font index 0-4)           |
+| `font_h(font)`                       | Get font height in pixels (font index 0-4)          |
+
+**Font indices:** 0 = 4x6, 1 = 5x8, 2 = 6x8, 3 = 7x9, 4 = 5x12
+
+**Notes:**
+- Text functions require `type 2D` in the meta block
+- `name_char()` returns the ASCII code (use with `draw_char`)
+- If the segment has no name set, `name_len()` returns 0 and `name_char()` returns 0
+- Characters are printable ASCII (codes 32-126)
+
 ---
 
 ## Examples

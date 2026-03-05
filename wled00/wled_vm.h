@@ -168,6 +168,13 @@ enum WledVMOp : uint8_t {
   OP_AMID  = 0xB4,  // rd — avg of fft bins 4-7
   OP_ATREB = 0xB5,  // rd — avg of fft bins 8-15
 
+  // Text operations (2D)
+  OP_DCHR  = 0xC0,  // ra, rb, rc, rd, ce — drawCharacter(chr, x, y, font, color)
+  OP_GCHR  = 0xC1,  // rd, ra — rd = seg.name[ra] (0 if null/OOB)
+  OP_GNLN  = 0xC2,  // rd — rd = strlen(seg.name) (0 if null)
+  OP_GFNW  = 0xC3,  // rd, ra — rd = font_width[ra] (font index 0-4)
+  OP_GFNH  = 0xC4,  // rd, ra — rd = font_height[ra] (font index 0-4)
+
   OP_NOP   = 0xFF
 };
 
