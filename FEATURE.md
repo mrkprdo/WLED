@@ -107,7 +107,7 @@ Start with `node wfx_compiler/simulator/serve.js` — auto-opens a browser at `h
 End-to-end tests that compile WLED-Lang source, execute it in a JS VM simulator (faithful port of the C++ interpreter), and verify results:
 
 - **88 tests** across 13 suites: headers, arithmetic, comparisons, loops, math, colors, pixels, data arrays, opcode variables, audio, edge cases, segment parameters, and full effects
-- **JS VM simulator** (`vm-sim.js`): implements all ~80 opcodes with matching 32-bit integer semantics, FastLED-compatible math, and mock segment/pixel/audio state
+- **JS VM simulator** (`vm-sim.js`): implements all ~85 opcodes with matching 32-bit integer semantics, FastLED-compatible math, and mock segment/pixel/audio state
 - Runs via `npm test` (Node.js built-in test runner, no dependencies)
 
 ## Security

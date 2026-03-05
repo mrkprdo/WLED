@@ -17,7 +17,7 @@ effect "My Effect" {
     for i in 0..LEN {
       pixel(i, palette((i * 8 + NOW * speed / 256) % 256))
     }
-    frame(speed)
+    frame()
   }
 }
 ```
@@ -158,9 +158,11 @@ while i < LEN {
 **frame** -- end the current frame and set delay:
 
 ```
-frame(speed)    // delay based on speed slider
+frame()         // speed-based delay (uses speed slider: higher = faster)
 frame(50)       // fixed 50ms delay
 ```
+
+`frame()` with no arguments uses the speed slider to calculate delay automatically: `5 + (50 * (255 - speed)) / 255`. This is the recommended form for most effects. Use `frame(N)` with an explicit millisecond value only when you need a fixed frame rate regardless of the speed slider.
 
 ### Data Buffers
 
@@ -316,7 +318,7 @@ effect "Rainbow" {
       pixel(i, color_wheel(hue))
     }
 
-    frame(speed)
+    frame()
   }
 }
 ```
@@ -342,7 +344,7 @@ effect "Sparkle" {
       pixel(pos, palette(random(255)))
     }
 
-    frame(speed)
+    frame()
   }
 }
 ```
@@ -390,7 +392,7 @@ effect "Fire 2012" {
       pixel(j, palette(colorindex))
     }
 
-    frame(speed)
+    frame()
   }
 }
 ```
@@ -421,7 +423,7 @@ effect "Plasma 2D" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }
 ```
@@ -457,7 +459,7 @@ effect "Scan" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }
 ```
@@ -484,7 +486,7 @@ effect "Volume Pulse" {
       pixel(i, color_fade(palette(bass + i), bri))
     }
 
-    frame(speed)
+    frame()
   }
 }
 ```
