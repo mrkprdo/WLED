@@ -17,10 +17,21 @@ const MIME = {
   '.json': 'application/json',
 };
 
+const MAX_BODY_SIZE = 1024 * 1024; // 1MB limit
+
 function readBody(req) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    let size = 0;
+    req.on('data', chunk => {
+      size += chunk.length;
+      if (size > MAX_BODY_SIZE) {
+        req.destroy();
+        reject(new Error('Request body too large'));
+        return;
+      }
+      body += chunk;
+    });
     req.on('end', () => resolve(body));
   });
 }
@@ -40,7 +51,10 @@ const server = http.createServer(async (req, res) => {
 
   // POST /compile — .wled source → .wfx binary
   if (req.method === 'POST' && req.url === '/compile') {
-    const body = await readBody(req);
+    let body;
+    try { body = await readBody(req); } catch (e) {
+      res.writeHead(413, { 'Content-Type': 'text/plain' }); res.end(e.message); return;
+    }
     try {
       const binary = compile(body);
       res.writeHead(200, { 'Content-Type': 'application/octet-stream' });
@@ -103,7 +117,10 @@ const server = http.createServer(async (req, res) => {
     if (!filePath.startsWith(EFFECTS_DIR)) {
       res.writeHead(403); res.end('Forbidden'); return;
     }
-    const body = await readBody(req);
+    let body;
+    try { body = await readBody(req); } catch (e) {
+      res.writeHead(413, { 'Content-Type': 'text/plain' }); res.end(e.message); return;
+    }
     try {
       fs.writeFileSync(filePath, body, 'utf8');
       res.writeHead(200, { 'Content-Type': 'text/plain' });

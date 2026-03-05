@@ -11,6 +11,7 @@
 // Static member initialization
 WfxEffect FXLoader::_effects[FX_MAX_EFFECTS];
 uint8_t FXLoader::_numSlots = 0;
+uint8_t FXLoader::_modeToSlot[256];
 
 // Shared VM instance (one per frame, not per effect — effects don't run concurrently)
 static WledVM vmInstance;
@@ -62,6 +63,7 @@ void FXLoader::init() {
     if (_effects[i].bytecode) { free(_effects[i].bytecode); _effects[i].bytecode = nullptr; }
   }
   memset(_effects, 0, sizeof(_effects));
+  memset(_modeToSlot, 255, sizeof(_modeToSlot));
   _numSlots = 0;
 
   // Create /fx directory if it doesn't exist
@@ -215,6 +217,7 @@ bool FXLoader::loadEffect(const char* path) {
   }
 
   _effects[slot].id = assignedId;
+  _modeToSlot[assignedId] = (uint8_t)slot;
   if (slot >= _numSlots) _numSlots = slot + 1; // extend high-water mark
 
   DEBUG_PRINTF_P(PSTR("FXLoader: loaded '%s' as mode %d (%d bytes)\n"),
@@ -253,6 +256,8 @@ bool FXLoader::unloadEffectByName(const char* filename) {
 void FXLoader::servicePendingDeletes() {
   for (uint8_t i = 0; i < _numSlots; i++) {
     if (_effects[i].pendingDelete) {
+      // Clear lookup table entry
+      _modeToSlot[_effects[i].id] = 255;
       // Remove from strip first (resets segments using this mode to Solid)
       strip.removeEffect(_effects[i].id);
       // Free bytecode
@@ -264,8 +269,9 @@ void FXLoader::servicePendingDeletes() {
 }
 
 WfxEffect* FXLoader::getEffect(uint8_t modeId) {
-  for (uint8_t i = 0; i < _numSlots; i++) {
-    if (_effects[i].bytecode && _effects[i].id == modeId) return &_effects[i];
+  uint8_t slot = _modeToSlot[modeId];
+  if (slot < _numSlots && _effects[slot].bytecode && _effects[slot].id == modeId) {
+    return &_effects[slot];
   }
   return nullptr;
 }

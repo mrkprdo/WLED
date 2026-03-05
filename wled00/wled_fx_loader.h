@@ -60,6 +60,7 @@ public:
 private:
   static WfxEffect _effects[FX_MAX_EFFECTS]; // fixed array — stable pointers, no shifting
   static uint8_t _numSlots;                  // high-water mark (slots used, including freed gaps)
+  static uint8_t _modeToSlot[256];           // mode ID → slot index (255 = unmapped)
 };
 
 #endif // WLED_FX_LOADER_H

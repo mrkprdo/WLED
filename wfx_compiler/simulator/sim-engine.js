@@ -296,6 +296,7 @@ function drawCircle(pixels2d, w, h, cx, cy, radius, color) {
 
 // fillCircle: x^2 + y^2 <= r^2 test
 function fillCircle(pixels2d, w, h, cx, cy, radius, color) {
+  radius = Math.min(Math.abs(radius), Math.max(w, h)); // clamp to grid size
   for (let dy = -radius; dy <= radius; dy++) {
     for (let dx = -radius; dx <= radius; dx++) {
       if (dx * dx + dy * dy <= radius * radius) {

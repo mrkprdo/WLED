@@ -43,6 +43,7 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg,
 
   byte* dataBuf = seg.data;
   uint16_t dataLen = seg.dataSize();
+  uint16_t nameLen = seg.name ? (uint16_t)strlen(seg.name) : 0;
 
   while (pc < len) {
     if (++cycles > VM_MAX_CYCLES_PER_FRAME) {
@@ -476,7 +477,7 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg,
     case OP_GCHR: {
       uint8_t d = readU8(bc), a = readU8(bc);
       int idx = getReg(a);
-      if (seg.name && idx >= 0 && idx < (int)strlen(seg.name)) {
+      if (seg.name && idx >= 0 && idx < (int)nameLen) {
         setReg(d, (int32_t)(unsigned char)seg.name[idx]);
       } else {
         setReg(d, 0);
@@ -484,7 +485,7 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg,
     } break;
     case OP_GNLN: {
       uint8_t d = readU8(bc);
-      setReg(d, seg.name ? (int32_t)strlen(seg.name) : 0);
+      setReg(d, (int32_t)nameLen);
     } break;
     case OP_GFNW: {
       uint8_t d = readU8(bc), a = readU8(bc);
