@@ -163,13 +163,21 @@ class Codegen {
 
   _buildMetadata(effect) {
     // WLED metadata format: Name@Sliders;Colors;Palette;Flags
+    // Slider positions: 0=Speed, 1=Intensity, 2=Custom1, 3=Custom2, 4=Custom3
+    // Empty position = slider hidden in UI
     let meta = effect.name;
     if (effect.meta) {
       meta += '@';
-      // Section 1: Slider labels
-      if (effect.meta.sliders.length > 0) {
-        meta += effect.meta.sliders.map(s => s.label).join(',');
+      // Section 1: Slider labels at correct positions
+      const sliderPos = { speed: 0, intensity: 1, custom1: 2, custom2: 3, custom3: 4 };
+      const labels = ['', '', '', '', ''];
+      for (const s of effect.meta.sliders) {
+        const pos = sliderPos[s.name];
+        if (pos !== undefined) labels[pos] = s.label;
       }
+      // Trim trailing empty slots
+      while (labels.length > 0 && labels[labels.length - 1] === '') labels.pop();
+      meta += labels.join(',');
       // Section 2: Color slot labels (default)
       meta += ';!';
       // Section 3: Palette

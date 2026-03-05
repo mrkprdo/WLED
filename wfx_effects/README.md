@@ -72,14 +72,17 @@ meta {
 }
 ```
 
-Up to 4 sliders are supported. They map to built-in variables in order:
+Up to 5 sliders are supported. Each slider name maps to a fixed UI position — only declared sliders are shown, undeclared ones are hidden:
 
-| Position | Variable    |
-| -------- | ----------- |
-| 1st      | `speed`     |
-| 2nd      | `intensity` |
-| 3rd      | `custom1`   |
-| 4th      | `custom2`   |
+| Slider name | UI position | Variable    |
+| ----------- | ----------- | ----------- |
+| `speed`     | Speed       | `speed`     |
+| `intensity` | Intensity   | `intensity` |
+| `custom1`   | Custom 1    | `custom1`   |
+| `custom2`   | Custom 2    | `custom2`   |
+| `custom3`   | Custom 3    | `custom3`   |
+
+You can declare sliders in any order and skip positions. For example, declaring only `slider intensity "Scale"` hides the speed slider and shows intensity. Effects with fixed-delay `frame(N)` that don't use speed should omit `slider speed` to hide the irrelevant slider.
 
 ### Variables
 
