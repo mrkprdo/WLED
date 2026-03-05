@@ -20,6 +20,6 @@ effect "Noisemeter WFX" {
       pixel(i, color_fade(c, bri))
     }
 
-    frame(speed)
+    frame()
   }
 }

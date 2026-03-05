@@ -23,6 +23,6 @@ effect "Waving Cell WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

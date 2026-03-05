@@ -8,6 +8,6 @@ effect "Fade WFX" {
     let phase = (NOW * speed / 1024) % 256
     let c = palette(phase)
     fill(c)
-    frame(speed)
+    frame()
   }
 }

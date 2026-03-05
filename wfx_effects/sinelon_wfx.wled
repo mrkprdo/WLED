@@ -23,6 +23,6 @@ effect "Sinelon WFX" {
 
     pixel(pos, palette(t))
 
-    frame(speed)
+    frame()
   }
 }

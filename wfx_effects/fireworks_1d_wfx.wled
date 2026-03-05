@@ -64,6 +64,6 @@ effect "Fireworks 1D WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

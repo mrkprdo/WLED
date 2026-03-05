@@ -45,6 +45,6 @@ effect "Fireworks Starburst" {
     // Expand burst
     let expandRate = 1 + speed / 64
     aux1 = aux1 + expandRate
-    frame(speed)
+    frame()
   }
 }

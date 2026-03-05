@@ -18,6 +18,6 @@ effect "Fill Noise WFX" {
       pixel(i, palette(n))
     }
 
-    frame(speed)
+    frame()
   }
 }

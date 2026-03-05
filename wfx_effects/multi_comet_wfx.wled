@@ -36,6 +36,6 @@ effect "Multi Comet WFX" {
       pixel(behind, color_fade(palette(hue + 10), 180))
     }
 
-    frame(speed)
+    frame()
   }
 }

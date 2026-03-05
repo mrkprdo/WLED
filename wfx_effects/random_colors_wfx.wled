@@ -43,6 +43,6 @@ effect "Random Colors WFX" {
 
     fill(c)
 
-    frame(speed)
+    frame()
   }
 }

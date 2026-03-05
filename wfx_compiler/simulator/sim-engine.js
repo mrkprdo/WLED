@@ -48,7 +48,7 @@ const OP = {
   ABS: 0x60, MIN: 0x61, MAX: 0x62,
   JMP: 0x70, JZ: 0x71, JNZ: 0x72, JLT: 0x73, JGT: 0x74,
   JEQ: 0x75, JLE: 0x76, JGE: 0x77,
-  CALL: 0x78, RET: 0x79, HALT: 0x7A,
+  CALL: 0x78, RET: 0x79, HALT: 0x7A, HALTS: 0x7B,
   ALLOC: 0x80,
   DLINE: 0x90, DCIRC: 0x91, FCIRC: 0x92, MOVEP: 0x93,
   FADD: 0xA0, FSUB: 0xA1, FMUL: 0xA2, FDIV: 0xA3,
@@ -828,6 +828,12 @@ export class SimEngine {
           const a = readU8();
           const delay = u16(getReg(a));
           return finish(delay > 0 ? delay : FRAMETIME);
+        } break;
+        case OP.HALTS: {
+          // frame() with no args: compute delay from speed using SPEED_FORMULA_L
+          // Higher speed = shorter delay = faster animation
+          const spd = regs[REG.P0] & 0xFF;
+          return finish(5 + Math.floor((50 * (255 - spd)) / 255));
         } break;
 
         // ---- Data Buffer ----

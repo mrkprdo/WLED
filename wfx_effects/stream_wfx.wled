@@ -17,6 +17,6 @@ effect "Stream WFX" {
       pixel(i, palette(idx))
     }
 
-    frame(speed)
+    frame()
   }
 }

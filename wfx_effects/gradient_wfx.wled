@@ -12,6 +12,6 @@ effect "Gradient WFX" {
       pixel(i, palette(idx))
     }
 
-    frame(speed)
+    frame()
   }
 }

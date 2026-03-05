@@ -28,6 +28,6 @@ effect "Wavesins WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

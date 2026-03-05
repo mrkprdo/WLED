@@ -33,6 +33,6 @@ effect "Chase Flash WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

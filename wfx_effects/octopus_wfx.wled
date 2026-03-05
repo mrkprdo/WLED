@@ -28,6 +28,6 @@ effect "Octopus WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

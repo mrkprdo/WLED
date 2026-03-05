@@ -17,6 +17,6 @@ effect "Sparkle Dark WFX" {
     }
     pixel(pos, rgb(bri, bri, bri))
 
-    frame(speed)
+    frame()
   }
 }

@@ -54,6 +54,6 @@ effect "Traffic Light WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -28,6 +28,6 @@ effect "Chase 2 WFX" {
       pixel(idx, color1)
     }
 
-    frame(speed)
+    frame()
   }
 }

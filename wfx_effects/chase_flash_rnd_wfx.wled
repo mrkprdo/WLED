@@ -33,6 +33,6 @@ effect "Chase Flash Rnd WFX" {
       pixel(h2, color_fade(color_wheel(rh), 160))
     }
 
-    frame(speed)
+    frame()
   }
 }

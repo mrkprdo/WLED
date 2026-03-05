@@ -30,6 +30,6 @@ effect "Spots" {
         pixel(i, palette(cidx))
       }
     }
-    frame(speed)
+    frame()
   }
 }

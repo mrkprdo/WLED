@@ -58,6 +58,6 @@ effect "TwinkleCat WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

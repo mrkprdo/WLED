@@ -23,6 +23,6 @@ effect "Loading WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

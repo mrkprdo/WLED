@@ -62,6 +62,6 @@ effect "Color Twinkles WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -26,6 +26,6 @@ effect "Lava Lamp 1D" {
     }
 
     blur(32)
-    frame(speed)
+    frame()
   }
 }

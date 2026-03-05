@@ -35,6 +35,6 @@ effect "Meteor WFX" {
       pixel(p, color_fade(palette(t / 4), bri))
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -45,6 +45,6 @@ effect "Sindots 2D WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

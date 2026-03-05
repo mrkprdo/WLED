@@ -23,6 +23,6 @@ effect "Drift WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

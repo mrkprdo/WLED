@@ -57,6 +57,6 @@ effect "Puddles WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

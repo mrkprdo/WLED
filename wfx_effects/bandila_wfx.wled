@@ -43,6 +43,6 @@ effect "Bandila WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -21,6 +21,6 @@ effect "Chase Random WFX" {
       pixel(idx, palette(pidx))
     }
 
-    frame(speed)
+    frame()
   }
 }

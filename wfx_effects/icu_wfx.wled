@@ -51,6 +51,6 @@ effect "ICU WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

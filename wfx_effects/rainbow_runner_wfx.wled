@@ -22,6 +22,6 @@ effect "Rainbow Runner WFX" {
       pixel(idx, color_wheel(hue))
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -39,6 +39,6 @@ effect "Sweep Random WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

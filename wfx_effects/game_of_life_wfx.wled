@@ -60,6 +60,6 @@ effect "Game of Life WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

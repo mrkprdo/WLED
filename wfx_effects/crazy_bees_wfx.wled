@@ -50,6 +50,6 @@ effect "Crazy Bees WFX" {
       pixel(p, palette(hue[i]))
     }
 
-    frame(speed)
+    frame()
   }
 }

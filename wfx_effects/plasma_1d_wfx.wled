@@ -25,6 +25,6 @@ effect "Plasma 1D" {
       }
       pixel(i, palette(combined % 256))
     }
-    frame(speed)
+    frame()
   }
 }

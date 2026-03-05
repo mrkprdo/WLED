@@ -29,6 +29,6 @@ effect "Waterfall WFX" {
       pixel2d(x, 0, bin)
     }
 
-    frame(speed)
+    frame()
   }
 }

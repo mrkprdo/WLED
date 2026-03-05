@@ -23,6 +23,6 @@ effect "Blurz WFX" {
     }
 
     blur2d(intensity / 4 + 8)
-    frame(speed)
+    frame()
   }
 }

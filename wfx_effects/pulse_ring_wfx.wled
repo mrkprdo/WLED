@@ -25,6 +25,6 @@ effect "Pulse Ring" {
       pixel(idx, palette(shade))
     }
 
-    frame(speed)
+    frame()
   }
 }

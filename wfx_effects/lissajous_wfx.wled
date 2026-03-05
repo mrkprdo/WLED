@@ -28,6 +28,6 @@ effect "Lissajous WFX" {
     }
 
     blur2d(16)
-    frame(speed)
+    frame()
   }
 }

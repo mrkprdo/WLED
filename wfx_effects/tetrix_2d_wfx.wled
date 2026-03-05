@@ -69,6 +69,6 @@ effect "Tetrix 2D WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

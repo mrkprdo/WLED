@@ -27,6 +27,6 @@ effect "Chunchun WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

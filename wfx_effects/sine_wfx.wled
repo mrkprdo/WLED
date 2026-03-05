@@ -32,6 +32,6 @@ effect "Sine WFX" {
       pixel(next, color_fade(palette(t + 16), 128))
     }
 
-    frame(speed)
+    frame()
   }
 }

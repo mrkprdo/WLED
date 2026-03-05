@@ -71,6 +71,6 @@ effect "Popcorn WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -26,6 +26,6 @@ effect "Running Dual WFX" {
       pixel(i, color_add(c1, c2))
     }
 
-    frame(speed)
+    frame()
   }
 }

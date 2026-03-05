@@ -36,6 +36,6 @@ effect "St Patricks WFX" {
       pixel(pos, rgb(255, 200, 0))
     }
 
-    frame(speed)
+    frame()
   }
 }

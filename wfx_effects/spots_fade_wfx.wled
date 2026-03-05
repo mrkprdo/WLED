@@ -32,6 +32,6 @@ effect "Spots Fade WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

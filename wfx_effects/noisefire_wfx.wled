@@ -21,6 +21,6 @@ effect "Noisefire WFX" {
       pixel(i, nx)
     }
 
-    frame(speed)
+    frame()
   }
 }

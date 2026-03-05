@@ -35,6 +35,6 @@ effect "Chase 3 WFX" {
       pixel(idx, color2)
     }
 
-    frame(speed)
+    frame()
   }
 }

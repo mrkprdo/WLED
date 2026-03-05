@@ -32,6 +32,6 @@ effect "Plasmoid WFX" {
       pixel(i, color_fade(palette(wave), bri))
     }
 
-    frame(speed)
+    frame()
   }
 }

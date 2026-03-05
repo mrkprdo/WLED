@@ -27,6 +27,6 @@ effect "Tri Fade WFX" {
 
     fill(c)
 
-    frame(speed)
+    frame()
   }
 }

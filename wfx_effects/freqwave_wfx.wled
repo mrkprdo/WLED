@@ -21,6 +21,6 @@ effect "Freqwave WFX" {
       pixel(i, color_fade(pos, val))
     }
 
-    frame(speed)
+    frame()
   }
 }

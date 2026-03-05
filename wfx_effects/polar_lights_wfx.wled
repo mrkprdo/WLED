@@ -22,6 +22,6 @@ effect "Polar Lights WFX" {
     }
 
     blur2d(intensity / 8 + 20)
-    frame(speed)
+    frame()
   }
 }

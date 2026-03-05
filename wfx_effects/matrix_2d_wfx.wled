@@ -56,6 +56,6 @@ effect "Matrix 2D WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

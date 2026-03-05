@@ -39,6 +39,6 @@ effect "Ripple Peak WFX" {
       aux0 = aux0 - 4
     }
 
-    frame(speed)
+    frame()
   }
 }

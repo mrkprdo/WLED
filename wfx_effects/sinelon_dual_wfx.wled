@@ -27,6 +27,6 @@ effect "Sinelon Dual WFX" {
     let pos2 = wave2 * (LEN - 1) / 255
     pixel(pos2, palette(t + 128))
 
-    frame(speed)
+    frame()
   }
 }

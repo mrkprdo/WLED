@@ -22,6 +22,6 @@ effect "Color Wipe WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

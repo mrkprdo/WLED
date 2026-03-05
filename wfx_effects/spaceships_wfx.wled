@@ -53,6 +53,6 @@ effect "Spaceships WFX" {
       pixel(trail, color_fade(palette(i * 255 / count), 100))
     }
 
-    frame(speed)
+    frame()
   }
 }

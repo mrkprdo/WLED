@@ -23,6 +23,6 @@ effect "Sparkle+ WFX" {
       pixel(pos, rgb(255, 255, 255))
     }
 
-    frame(speed)
+    frame()
   }
 }

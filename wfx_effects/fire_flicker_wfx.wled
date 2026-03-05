@@ -26,6 +26,6 @@ effect "Fire Flicker WFX" {
       pixel(i, rgb(r, g, b))
     }
 
-    frame(speed)
+    frame()
   }
 }

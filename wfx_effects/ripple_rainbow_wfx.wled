@@ -54,6 +54,6 @@ effect "Ripple Rainbow WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

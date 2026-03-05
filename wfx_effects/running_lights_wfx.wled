@@ -15,6 +15,6 @@ effect "Running Lights WFX" {
       pixel(i, faded)
     }
 
-    frame(speed)
+    frame()
   }
 }

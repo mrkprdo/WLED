@@ -422,6 +422,12 @@ uint16_t WledVM::execute(const uint8_t* bc, uint16_t len, Segment& seg,
       uint16_t delay = (uint16_t)getReg(a);
       return delay > 0 ? delay : FRAMETIME;
     } break;
+    case OP_HALTS: {
+      // frame() with no args: compute delay from speed using SPEED_FORMULA_L
+      // Higher speed = shorter delay = faster animation
+      uint8_t spd = (uint8_t)regs[REG_P0];
+      return 5 + (50 * (255 - spd)) / 255;
+    } break;
 
     // ---- Data Buffer ----
     case OP_ALLOC: {

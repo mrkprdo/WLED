@@ -35,6 +35,6 @@ effect "Meteor Smooth WFX" {
       pixel(p, color_fade(palette(hue), bri))
     }
 
-    frame(speed)
+    frame()
   }
 }

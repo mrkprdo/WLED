@@ -33,6 +33,6 @@ effect "Tri Wipe WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

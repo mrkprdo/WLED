@@ -17,6 +17,6 @@ effect "Solid Glitter" {
       let sparkle = rgb(bright, bright, bright)
       pixel(pos, sparkle)
     }
-    frame(speed)
+    frame()
   }
 }

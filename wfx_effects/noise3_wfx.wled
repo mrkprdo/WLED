@@ -19,6 +19,6 @@ effect "Noise 3 WFX" {
       pixel(i, color_fade(palette(n), bri))
     }
 
-    frame(speed)
+    frame()
   }
 }

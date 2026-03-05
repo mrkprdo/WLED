@@ -24,6 +24,6 @@ effect "Noise Palette WFX" {
       pixel(i, color_fade(palette(n), bri))
     }
 
-    frame(speed)
+    frame()
   }
 }

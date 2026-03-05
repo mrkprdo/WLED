@@ -46,6 +46,6 @@ effect "Two Dots WFX" {
       pixel(p, color_fade(color1, 96))
     }
 
-    frame(speed)
+    frame()
   }
 }

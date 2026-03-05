@@ -46,6 +46,6 @@ effect "Lightning WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

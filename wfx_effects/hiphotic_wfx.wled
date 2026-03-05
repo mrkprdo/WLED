@@ -24,6 +24,6 @@ effect "Hiphotic WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

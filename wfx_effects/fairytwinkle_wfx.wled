@@ -57,6 +57,6 @@ effect "Fairy Twinkle WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

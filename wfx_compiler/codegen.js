@@ -152,9 +152,8 @@ class Codegen {
       this._genStmt(stmt);
     }
 
-    // HALT with reg 0 (which is 0 → returns FRAMETIME)
-    this._emitByte(OP.HALT);
-    this._emitByte(0);
+    // Trailing HALTS (speed-based delay) as safety fallthrough
+    this._emitByte(OP.HALTS);
 
     this._resolveLabels();
     return this._buildWfx(metadata, dataSizeUnits);
@@ -471,12 +470,18 @@ class Codegen {
   }
 
   _genFrame(stmt) {
-    const delayReg = this._pushTmp();
-    this._genExpr(stmt.delay, delayReg);
-    // HALT: [op, a] — VM reads 1 operand byte
-    this._emitByte(OP.HALT);
-    this._emitByte(delayReg);
-    this._popTmp();
+    if (stmt.delay === null) {
+      // frame() — no args: emit HALTS (speed-based delay, no operands)
+      this._emitByte(OP.HALTS);
+    } else {
+      // frame(expr) — explicit delay in ms
+      const delayReg = this._pushTmp();
+      this._genExpr(stmt.delay, delayReg);
+      // HALT: [op, a] — VM reads 1 operand byte
+      this._emitByte(OP.HALT);
+      this._emitByte(delayReg);
+      this._popTmp();
+    }
   }
 
   _genCallStmt(stmt) {

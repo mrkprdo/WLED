@@ -42,6 +42,6 @@ effect "Ghost Rider WFX" {
       pixel(g4, rgb(180, 40, 0))
     }
 
-    frame(speed)
+    frame()
   }
 }

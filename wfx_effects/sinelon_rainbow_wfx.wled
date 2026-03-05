@@ -22,6 +22,6 @@ effect "Sinelon Rainbow WFX" {
     let hue = pos * 255 / LEN
     pixel(pos, color_wheel(hue))
 
-    frame(speed)
+    frame()
   }
 }

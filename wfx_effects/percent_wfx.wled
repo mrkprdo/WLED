@@ -34,6 +34,6 @@ effect "Percent" {
         pixel(i, rgb(r, g, b))
       }
     }
-    frame(speed)
+    frame()
   }
 }

@@ -87,6 +87,6 @@ effect "Drip WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

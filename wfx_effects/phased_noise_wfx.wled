@@ -29,6 +29,6 @@ effect "Phased Noise WFX" {
       pixel(i, color_fade(palette(idx), bri))
     }
 
-    frame(speed)
+    frame()
   }
 }

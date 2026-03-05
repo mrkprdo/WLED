@@ -46,6 +46,6 @@ effect "Oscillate WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

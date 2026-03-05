@@ -31,6 +31,6 @@ effect "Dynamic WFX" {
       pixel(i, color_wheel(hue))
     }
 
-    frame(speed)
+    frame()
   }
 }

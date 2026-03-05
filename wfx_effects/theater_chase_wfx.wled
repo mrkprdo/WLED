@@ -17,6 +17,6 @@ effect "Theater Chase WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

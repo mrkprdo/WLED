@@ -51,6 +51,6 @@ effect "Scanner Dual WFX" {
       pixel(p, color_fade(palette(hue2), 128))
     }
 
-    frame(speed)
+    frame()
   }
 }

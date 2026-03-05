@@ -22,6 +22,6 @@ effect "Saw WFX" {
       pixel(i, color_fade(palette(pidx), bri))
     }
 
-    frame(speed)
+    frame()
   }
 }

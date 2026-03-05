@@ -9,6 +9,6 @@ effect "Breathe WFX" {
     let c = palette(wave)
     let faded = color_fade(c, wave)
     fill(faded)
-    frame(speed)
+    frame()
   }
 }

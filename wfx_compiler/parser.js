@@ -242,11 +242,14 @@ class Parser {
     return Node.While(cond, body);
   }
 
-  // frame(delay)
+  // frame(delay) or frame() — no-arg uses SPEED_FORMULA_L
   _frameStmt() {
     this.lex.expect(T.KEYWORD, 'frame');
     this.lex.expect(T.PUNCT, '(');
-    const delay = this._expr();
+    let delay = null;
+    if (!this.lex.check(T.PUNCT, ')')) {
+      delay = this._expr();
+    }
     this.lex.expect(T.PUNCT, ')');
     return Node.Frame(delay);
   }

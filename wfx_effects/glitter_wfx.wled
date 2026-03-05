@@ -25,6 +25,6 @@ effect "Glitter" {
       let sparkle = blend(col, rgb(255, 255, 255), 180)
       pixel(pos, sparkle)
     }
-    frame(speed)
+    frame()
   }
 }

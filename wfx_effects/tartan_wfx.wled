@@ -21,6 +21,6 @@ effect "Tartan WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

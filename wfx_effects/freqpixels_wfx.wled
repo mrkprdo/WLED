@@ -24,6 +24,6 @@ effect "Freqpixels WFX" {
       pixel(pos, c)
     }
 
-    frame(speed)
+    frame()
   }
 }

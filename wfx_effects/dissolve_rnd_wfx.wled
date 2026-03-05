@@ -30,6 +30,6 @@ effect "Dissolve Rnd WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

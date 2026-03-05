@@ -37,6 +37,6 @@ effect "Fire 2012 WFX" {
       pixel(j, palette(colorindex))
     }
 
-    frame(speed)
+    frame()
   }
 }

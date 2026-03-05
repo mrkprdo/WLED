@@ -25,6 +25,6 @@ effect "Black Hole WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

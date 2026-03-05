@@ -45,6 +45,6 @@ effect "Twinkle Up WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -20,6 +20,6 @@ effect "Noise 1 WFX" {
       pixel(i, color_fade(palette(n), bri))
     }
 
-    frame(speed)
+    frame()
   }
 }

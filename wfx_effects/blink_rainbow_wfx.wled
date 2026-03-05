@@ -21,6 +21,6 @@ effect "Blink Rainbow WFX" {
       fill(rgb(0, 0, 0))
     }
 
-    frame(speed)
+    frame()
   }
 }

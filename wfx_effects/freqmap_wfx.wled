@@ -21,6 +21,6 @@ effect "Freqmap WFX" {
       pixel(i, color_fade(bin, val))
     }
 
-    frame(speed)
+    frame()
   }
 }

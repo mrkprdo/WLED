@@ -26,6 +26,6 @@ effect "Rocktaves WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -16,6 +16,6 @@ effect "Chase WFX" {
       pixel(idx, palette(j * 255 / width))
     }
 
-    frame(speed)
+    frame()
   }
 }

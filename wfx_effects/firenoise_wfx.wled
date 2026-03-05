@@ -23,6 +23,6 @@ effect "Firenoise WFX" {
     }
 
     blur2d(intensity / 16 + 8)
-    frame(speed)
+    frame()
   }
 }

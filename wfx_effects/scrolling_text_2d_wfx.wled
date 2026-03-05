@@ -28,7 +28,7 @@ effect "Scrolling Text 2D WFX" {
     // Text length — exit early if no name set
     let tlen = name_len()
     if tlen == 0 {
-      frame(speed)
+      frame()
     }
 
     // Store total pixel width in aux0
@@ -58,6 +58,6 @@ effect "Scrolling Text 2D WFX" {
       step_val = (step_val + spd) % wrap
     }
 
-    frame(speed)
+    frame()
   }
 }

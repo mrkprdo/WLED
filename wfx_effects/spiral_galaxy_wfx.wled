@@ -22,6 +22,6 @@ effect "Spiral Galaxy" {
       pixel(i, palette(combined))
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -22,6 +22,6 @@ effect "Chase Rainbow WFX" {
       pixel(idx, color_wheel(hue))
     }
 
-    frame(speed)
+    frame()
   }
 }

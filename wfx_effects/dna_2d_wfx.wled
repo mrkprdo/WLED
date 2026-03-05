@@ -48,6 +48,6 @@ effect "DNA 2D WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

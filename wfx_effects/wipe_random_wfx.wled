@@ -35,6 +35,6 @@ effect "Wipe Random WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

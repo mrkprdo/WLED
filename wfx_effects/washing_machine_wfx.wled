@@ -24,6 +24,6 @@ effect "Washing Machine WFX" {
       pixel(i, palette(cidx))
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -83,6 +83,6 @@ effect "Bouncing Balls WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

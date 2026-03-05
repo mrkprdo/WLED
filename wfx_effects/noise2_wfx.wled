@@ -21,6 +21,6 @@ effect "Noise 2 WFX" {
       pixel(i, palette(n))
     }
 
-    frame(speed)
+    frame()
   }
 }

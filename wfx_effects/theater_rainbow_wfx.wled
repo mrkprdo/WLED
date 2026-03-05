@@ -23,6 +23,6 @@ effect "Theater Rainbow WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

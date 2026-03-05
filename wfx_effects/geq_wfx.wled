@@ -27,6 +27,6 @@ effect "GEQ WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -140,6 +140,7 @@ enum WledVMOp : uint8_t {
   OP_CALL  = 0x78,  // offset16 — push PC, jump
   OP_RET   = 0x79,  // pop PC, return
   OP_HALT  = 0x7A,  // ra — end frame, return ra as delay (ms)
+  OP_HALTS = 0x7B,  // (no operands) — end frame, delay from speed via SPEED_FORMULA_L
 
   // Data buffer
   OP_ALLOC = 0x80,  // ra — allocateData(ra), r0 = success

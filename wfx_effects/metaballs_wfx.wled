@@ -28,6 +28,6 @@ effect "Metaballs WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

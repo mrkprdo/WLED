@@ -35,6 +35,6 @@ effect "Lighthouse WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

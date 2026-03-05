@@ -50,6 +50,6 @@ effect "Dynamic Smooth WFX" {
       pixel(i, color_wheel(cur))
     }
 
-    frame(speed)
+    frame()
   }
 }

@@ -18,6 +18,6 @@ effect "Twinkle WFX" {
       pixel(pos, faded)
     }
 
-    frame(speed)
+    frame()
   }
 }

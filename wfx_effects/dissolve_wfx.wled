@@ -67,6 +67,6 @@ effect "Dissolve WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }

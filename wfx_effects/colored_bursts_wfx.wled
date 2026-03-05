@@ -65,6 +65,6 @@ effect "Colored Bursts 2D WFX" {
       }
     }
 
-    frame(speed)
+    frame()
   }
 }
